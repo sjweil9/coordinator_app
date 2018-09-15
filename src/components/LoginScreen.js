@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { Text, View, Image } from 'react-native';
 import { Button, TextField, Spinner } from './common';
+import * as actions from '../actions';
+import { connect } from 'react-redux';
 
-export default class LoginScreen extends Component {
+class LoginScreen extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -16,7 +18,7 @@ export default class LoginScreen extends Component {
 
   sendLoginRequest() {
     this.setState({ error: '', loading: true });
-    fetch('http://192.168.1.70:3000/login', {
+    fetch('http://192.168.1.72:3000/login', {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -28,13 +30,14 @@ export default class LoginScreen extends Component {
       }),
     }).then(response => response.json())
     .then(responseJSON => {
-      console.log(responseJSON);
       this.setState({ loading: false });
-      if (responseJSON.code != 200) {
+      console.log(responseJSON.code);
+      if (responseJSON.code && responseJSON.code != 200) {
         this.setState({ error: responseJSON.messages[0].credentials });
       }
       else {
-        console.log('success!');
+        console.log('im here')
+        this.props.setAuthToken(responseJSON.access_token);
       }
     })
     .catch(error => {
@@ -125,3 +128,5 @@ const styles = {
     marginTop: 5
   }
 }
+
+export default connect(null, actions)(LoginScreen);

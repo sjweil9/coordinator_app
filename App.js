@@ -1,23 +1,17 @@
 import React from 'react';
-import { View } from 'react-native';
-import { HeadingBar } from './src/components/common';
+import Router from './src/components/Router'
 import List from './src/components/List';
-import LoginScreen from './src/components/LoginScreen';
+import { Provider } from 'react-redux';
+import { createStore } from 'redux';
+import reducers from './src/reducers';
 
 export default class App extends React.Component {
   render() {
     return (
-      <View style={styles.containerStyle}>
-        <LoginScreen />
-      </View>
+      <Provider store={createStore(reducers)}>
+        <Router />
+      </Provider>
     );
-  }
-}
-
-const styles = {
-  containerStyle: {
-    flex: 1,
-    backgroundColor: '#c9ddff'
   }
 }
 
