@@ -1,10 +1,10 @@
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, Text } from 'react-native';
 
 const Button = (props) => {
   return(
     <TouchableOpacity onPress={props.onPress} style={styles.buttonStyle}>
-      {props.children}
+      <Text style={styles.buttonTextStyle}>{props.buttonText}</Text>
     </TouchableOpacity>
   )
 };
@@ -19,7 +19,12 @@ const styles = {
     marginRight: 20,
     alignSelf: 'stretch',
     height: 40,
-  }
+  },
+  buttonTextStyle: {
+    textAlign: 'center',
+    fontSize: 24,
+    color: '#c9ddff'
+  },
 }
 
 export { Button };

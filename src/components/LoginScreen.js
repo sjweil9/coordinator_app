@@ -31,12 +31,10 @@ class LoginScreen extends Component {
     }).then(response => response.json())
     .then(responseJSON => {
       this.setState({ loading: false });
-      console.log(responseJSON.code);
       if (responseJSON.code && responseJSON.code != 200) {
         this.setState({ error: responseJSON.messages[0].credentials });
       }
       else {
-        console.log('im here')
         this.props.setAuthToken(responseJSON.access_token);
       }
     })
@@ -54,9 +52,7 @@ class LoginScreen extends Component {
     }
 
     return(
-      <Button onPress={this.sendLoginRequest}>
-          <Text style={styles.buttonTextStyle}>LOG IN</Text>
-      </Button>
+      <Button onPress={this.sendLoginRequest} buttonText={'LOG IN'} />
     )
   }
 
@@ -77,6 +73,7 @@ class LoginScreen extends Component {
             onChangeText={email => this.setState({ email })}
             autoCorrect={false}
             textContentType="emailAddress"
+            placeholderTextColor='#003C5A'
           />
           <TextField
             value={this.state.password}
@@ -85,6 +82,7 @@ class LoginScreen extends Component {
             onChangeText={password => this.setState({ password })}
             autoCorrect={false}
             textContentType="password"
+            placeholderTextColor='#003C5A'
           />
           <Text style={styles.errorTextStyle}>{this.state.error}</Text>
         </View>
@@ -95,11 +93,6 @@ class LoginScreen extends Component {
 }
 
 const styles = {
-  buttonTextStyle: {
-    textAlign: 'center',
-    fontSize: 24,
-    color: '#c9ddff'
-  },
   logoStyle: {
     height: 150,
     width: 150,

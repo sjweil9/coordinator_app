@@ -10,7 +10,11 @@ const TextField = (props) => {
     autoFocus, 
     autoCorrect, 
     textContentType, 
-    secureTextEntry 
+    secureTextEntry,
+    placeholderTextColor,
+    multiline,
+    maxLength,
+    numberOfLines
   } = props;
 
   return(
@@ -22,10 +26,13 @@ const TextField = (props) => {
         placeholder={placeholder}
         autoCorrect={autoCorrect}
         autoFocus={autoFocus}
-        placeholderTextColor='#6a7a82'
+        placeholderTextColor={placeholderTextColor}
         textContentType={textContentType}
         underlineColorAndroid={'#003C5A'}
         secureTextEntry={secureTextEntry}
+        multiline={multiline}
+        maxLength={maxLength}
+        numberOfLines={numberOfLines}
       />
     </View>
   );
@@ -40,8 +47,8 @@ const styles = {
   inputStyle: {
     lineHeight: 18,
     fontSize: 14,
-    padding: 10,
-    width: 250,
+    padding: 5,
+    width: 200,
   }
 }
 

@@ -41,7 +41,7 @@ class HeadingBar extends Component {
   
   render() {
     return(
-      <View>
+      <View style={styles.outerContainer}>
         <View style={styles.viewStyles}>
           <View style={styles.hamburgerWrapper}>
             <Hamburger 
@@ -73,7 +73,7 @@ const styles = {
     paddingTop: 30,
     paddingLeft: 15,
     paddingBottom: 15,
-    backgroundColor: '#003C5A'
+    backgroundColor: '#003C5A',
   },
   hamburgerWrapper: {
     flex: 1
@@ -87,6 +87,9 @@ const styles = {
     alignSelf: 'stretch',
     elevation: 2,
     borderColor: '#003c5a'
+  },
+  outerContainer: {
+    marginBottom: 15,
   }
 };
 
