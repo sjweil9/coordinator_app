@@ -14,6 +14,7 @@ class LoginScreen extends Component {
       loading: false,
     }
     this.sendLoginRequest = this.sendLoginRequest.bind(this);
+    this.setAuthToken = this.setAuthToken.bind(this);
   }
 
   sendLoginRequest() {
@@ -122,4 +123,13 @@ const styles = {
   }
 }
 
-export default connect(null, actions)(LoginScreen);
+const mapStateToProps = (state, ownProps) => {
+  return {
+    ...ownProps,
+    authToken: state.authToken,
+    currentUser: state.currentUser,
+    selectedScreen: state.selectedScreen,
+  }
+}
+
+export default connect(mapStateToProps, actions)(LoginScreen);

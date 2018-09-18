@@ -18,7 +18,6 @@ class List extends Component {
   }
 
   componentWillMount() {
-    console.log('making list API call')
     fetch(`http://192.168.1.72:3000/${this.props.itemUrl}`, {
       method: 'GET',
       headers: {
@@ -28,23 +27,16 @@ class List extends Component {
     }}).then(response => response.json())
     .then(responseJSON => {
       if (responseJSON.code && responseJSON.code != 200) {
+        // handle error on list
         console.log(responseJSON);
       }
       else {
-        console.log(`response from list api call`);
-        console.log(responseJSON);
-        console.log(`props after list api call`)
-        console.log(this.props)
         this.props.setUserCreatedLists(responseJSON);
-        console.log('props after calling setUserCreatedLists')
-        console.log(this.props);
       }
     });
   }
 
   render() {
-    console.log('rendering list')
-    console.log(this.props)
     const ListItemType = this.componentMapping[this.props.itemType];
 
     return(
@@ -60,14 +52,12 @@ class List extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => {
-  console.log('map state to props')
-  console.log(state);
-  console.log(ownProps)
   return {
     ...ownProps,
     authToken: state.authToken,
     currentUser: state.currentUser,
     userCreatedLists: state.userCreatedLists,
+    selectedList: state.selectedList,
   }
 }
 

@@ -34,7 +34,6 @@ class Router extends Component {
       }
     })
     .catch(error => {
-      console.log(error);
       this.setAuthToken(null);
     });
   }
@@ -77,8 +76,9 @@ class Router extends Component {
   }
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state, ownProps) => {
   return {
+    ...ownProps,
     authToken: state.authToken,
     currentUser: state.currentUser,
     selectedScreen: state.selectedScreen,

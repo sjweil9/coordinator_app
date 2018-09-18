@@ -3,10 +3,12 @@ import AuthTokenReducer from './AuthTokenReducer';
 import UserProfileReducer from './UserProfileReducer'
 import SelectedScreenReducer from './SelectedScreenReducer';
 import UserCreatedListsReducer from './UserCreatedListsReducer';
+import SelectedListReducer from './SelectedListReducer';
 
 export default combineReducers({
     authToken: AuthTokenReducer,
     currentUser: UserProfileReducer,
     selectedScreen: SelectedScreenReducer,
     userCreatedLists: UserCreatedListsReducer,
+    selectedList: SelectedListReducer,
 })

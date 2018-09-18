@@ -14,5 +14,3 @@ export default class App extends React.Component {
     );
   }
 }
-
-// <List itemUrl={'tasks'} itemType={'task'} />

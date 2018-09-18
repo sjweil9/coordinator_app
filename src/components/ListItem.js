@@ -7,11 +7,11 @@ import * as actions from '../actions';
 class ListItem extends Component {
   constructor(props) {
     super(props)
-    this.props.setSelectedList = this.props.setSelectedList.bind(this);
     this.jumpToListDetail = this.jumpToListDetail.bind(this);
   }
 
   jumpToListDetail() {
+    console.log('jumping to list detail')
     console.log(this.props.details.id);
     this.props.setSelectedList(this.props.details.id);
     console.log(this.props)
@@ -19,8 +19,6 @@ class ListItem extends Component {
   }
 
   render() {
-    console.log('rendering a list item')
-    console.log(this.props.details)
     const { id, title, description, created_user } = this.props.details;
     return(
       <TouchableOpacity style={styles.rowWrapper} onPress={() => this.jumpToListDetail()}>
