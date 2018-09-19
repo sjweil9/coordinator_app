@@ -14,8 +14,8 @@ const styles = {
     padding: 2.5,
     elevation: 2,
     borderRadius: 5,
-    width: 100,
-    height: 50,
+    width: 60,
+    height: 60,
     justifyContent: 'center',
   },
   buttonTextStyle: {

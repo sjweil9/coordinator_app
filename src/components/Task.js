@@ -7,23 +7,6 @@ export default class Task extends Component {
     super(props)
   }
 
-  statusText() {
-    switch(this.props.details.status) {
-      case 'unclaimed': {
-        return `Unclaimed - Due: ${this.props.details.due_at || 'N/A'}`;
-      } 
-      case 'claimed': {
-        return `Claimed - Due: ${this.props.details.due_at || 'N/A'}`;
-      }
-      case 'completed': {
-        return `Completed: ${this.props.details.completed_at || 'N/A'}`;
-      }
-      default: {
-        return '';
-      }
-    }
-  }
-
   renderClaimButton() {
     if (this.props.details.status === 'unclaimed') {
       return(
@@ -66,20 +49,18 @@ export default class Task extends Component {
   render() {
     return(
       <View style={styles.taskWrapper}>
-        <CardSection>
-          <Text style={styles.headingText}>{this.props.details.title}</Text>
-        </CardSection>
-        <CardSection bottomBorder={true}>
-          <View style={styles.lowerBox}>
-            <Text style={styles.descriptionText}>{this.props.details.description}</Text>
-            <Text style={styles.statusText}>{this.statusText()}</Text>
-          </View>
-        </CardSection>
-        <CardSection>
+        <View style={styles.leftInnerWrapper}>
           {this.renderClaimButton()}
           {this.renderCompleteButton()}
+        </View>
+        <View style={styles.middleInnerWrapper}>
+          <CardSection>
+            <Text style={styles.headingText}>{this.props.details.title}</Text>
+          </CardSection>
+        </View>
+        <View style={styles.rightInnerWrapper}>
           {this.renderDeleteButton()}
-        </CardSection>
+        </View>
       </View>
     )
   }
@@ -108,6 +89,21 @@ const styles = {
     borderRadius: 5,
     marginBottom: 10,
     marginLeft: 20,
-    marginRight: 20
+    marginRight: 20,
+    flex: 1,
+    flexDirection: 'row',
+  },
+  leftInnerWrapper: {
+    flex: 1,
+    borderRightWidth: 1,
+    borderRightColor: '#003c5a',
+    padding: 5,
+    justifyContent: 'center',
+  },
+  middleInnerWrapper: {
+    flex: 3
+  },
+  rightInnerWrapper: {
+    flex: 1,
   }
 }

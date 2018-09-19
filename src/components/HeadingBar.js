@@ -13,13 +13,18 @@ class HeadingBar extends Component {
     }
   }
 
+  moveToLists() {
+    this.setState({ hamburgerActive: false });
+    this.props.movePageForward('user_lists');
+  }
+
   renderDropDown() {
     if (this.state.hamburgerActive) {
       return(
         <View style={styles.dropDownContainer}>
           <HamburgerButton
             buttonText={'Lists'}
-            onPress={() => null}
+            onPress={() => this.moveToLists()}
           />
           <HamburgerButton
             buttonText={'Friends'}

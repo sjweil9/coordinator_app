@@ -10,7 +10,8 @@ class ListDetail extends Component {
     super(props)
     this.state = {
       listDetails: null,
-      listTasks: []
+      listTasks: [],
+      addingTask: false,
     }
   }
 
@@ -29,6 +30,7 @@ class ListDetail extends Component {
       }
       else {
         this.setState({
+          ...this.state,
           listDetails: responseJSON,
           listTasks: responseJSON.tasks || [],
         });
