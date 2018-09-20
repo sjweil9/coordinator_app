@@ -45,14 +45,14 @@ class Task extends Component {
   }
 
   actOnTask() {
-    const createdUser = this.state.task.created_user;
+    const claimedUser = this.state.task.claimed_user;
     if (this.state.task.status == 'unclaimed') {
       this.changeTaskStatus('claimed');
     }
-    else if (this.state.task.status == 'claimed' && createdUser && createdUser.id == this.props.currentUser.id) {
+    else if (this.state.task.status == 'claimed' && claimedUser && claimedUser.id == this.props.currentUser.id) {
       this.unClaimOrCompleteAlert();
     }
-    else if (this.state.task.status == 'completed' && createdUser && createdUser.id == this.props.currentUser.id) {
+    else if (this.state.task.status == 'completed' && claimedUser && claimedUser.id == this.props.currentUser.id) {
       this.reverseCompletionAlert();
     }
   }
@@ -68,7 +68,7 @@ class Task extends Component {
   changeTaskStatus(action) {
     const claimedUser = this.state.task.claimed_user;
     const ownedByUser = claimedUser && claimedUser.id == this.props.currentUser.id;
-    if (!claimedUser || action == 'unclaimed' || (action == 'completed' && ownedByUser)) {
+    if (!claimedUser || action == 'unclaimed' || (ownedByUser)) {
       fetch(`http://192.168.1.72:3000/lists/${this.props.selectedList}/tasks/${this.state.task.id}/status`, {
         method: 'PATCH',
         headers: {
