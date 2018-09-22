@@ -14,7 +14,7 @@ const styles = {
     padding: 2.5,
     elevation: 2,
     borderRadius: 5,
-    width: 40,
+    width: 55,
     height: 40,
     justifyContent: 'center',
   },

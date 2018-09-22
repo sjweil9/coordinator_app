@@ -10,12 +10,12 @@ class ListDetail extends Component {
     super(props)
     this.state = {
       listDetails: null,
-      listTasks: [],
       addingTask: false,
     }
   }
 
   componentWillMount() {
+    console.log('mounting list detail')
     fetch(`http://192.168.1.72:3000/lists/${this.props.selectedList}`, {
       method: 'GET',
       headers: {
@@ -32,8 +32,8 @@ class ListDetail extends Component {
         this.setState({
           ...this.state,
           listDetails: responseJSON,
-          listTasks: responseJSON.tasks || [],
         });
+        this.props.setCurrentListTasks(responseJSON.tasks || []);
       }
     }).catch(error => {
       // handle error
@@ -45,7 +45,7 @@ class ListDetail extends Component {
     return(
       <View style={styles.listContainer}>
         <FlatList
-          data={this.state.listTasks}
+          data={this.props.currentListTasks}
           renderItem={({item}) => <Task details={item} />}
           keyExtractor={(item, _index) => `${item.id}`}
         />
@@ -95,6 +95,7 @@ const mapStateToProps = (state, ownProps) => {
     authToken: state.authToken,
     currentUser: state.currentUser,
     selectedList: state.selectedList,
+    currentListTasks: state.currentListTasks,
   }
 }
 

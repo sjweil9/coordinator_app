@@ -4,6 +4,7 @@ import UserProfileReducer from './UserProfileReducer'
 import SelectedScreenReducer from './SelectedScreenReducer';
 import UserCreatedListsReducer from './UserCreatedListsReducer';
 import SelectedListReducer from './SelectedListReducer';
+import CurrentListTasksReducer from './CurrentListTasksReducer';
 
 export default combineReducers({
     authToken: AuthTokenReducer,
@@ -11,4 +12,5 @@ export default combineReducers({
     selectedScreen: SelectedScreenReducer,
     userCreatedLists: UserCreatedListsReducer,
     selectedList: SelectedListReducer,
+    currentListTasks: CurrentListTasksReducer,
 })

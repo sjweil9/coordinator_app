@@ -34,7 +34,7 @@ class UserLists extends Component {
     .then(responseJSON => {
       this.setState({ loading: false, listTitle: '', listDescription: '' });
       if (responseJSON.code && responseJSON.code != 201) {
-        this.setState({ 
+        this.setState({
           descriptionError: responseJSON.messages.description ? responseJSON.messages.description[0] : '',
           titleError: responseJSON.messages.title ? responseJSON.messages.title[0] : ''
         });

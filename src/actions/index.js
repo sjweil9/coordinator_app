@@ -39,3 +39,10 @@ export const setSelectedList = (list_id) => {
     payload: list_id,
   }
 }
+
+export const setCurrentListTasks = (tasks) => {
+  return {
+    type: 'set_tasks',
+    payload: tasks,
+  }
+}

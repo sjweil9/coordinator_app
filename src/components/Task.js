@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Text, View, TouchableOpacity, Alert, Image } from 'react-native';
 import { CardSection, SmallButton } from './common';
 import { connect } from 'react-redux';
+import * as actions from '../actions';
 
 class Task extends Component {
   constructor(props) {
@@ -16,13 +17,48 @@ class Task extends Component {
     if (this.state.task.created_user && this.state.task.created_user.id == this.props.currentUser.id) {
       return(
         <SmallButton 
-            onPress={() => null}
+            onPress={() => this.deleteTask()}
             buttonText={'Delete'}
             backgroundColor={'#D8000C'}
         />
       )
     }
     return null;
+  }
+
+  deleteTask() {
+    console.log('deleting task')
+    fetch(`http://192.168.1.72:3000/tasks/${this.state.task.id}`, {
+      method: 'DELETE',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: this.props.authToken,
+      }
+    }).then(response => response.json())
+    .then(responseJSON => {
+      console.log(responseJSON);
+      if (responseJSON.code && responseJSON.code != 204) {
+        // handle error on list details
+        console.log(responseJSON);
+        Alert.alert(
+          'Error',
+          `${Object.values(responseJSON.messages[0])[0]}`,
+          [
+            {text: 'OK', onPress: () => null},
+          ],
+          { cancelable: true }
+        )
+      }
+      else {
+        // trigger parent to re-render
+        const remaining_tasks = this.props.currentListTasks.filter(task => task.id !== this.props.details.id)
+        this.props.setCurrentListTasks(remaining_tasks);
+      }
+    }).catch(error => {
+      // handle error
+      console.log(error);
+    });
   }
 
   renderStatus() {
@@ -86,7 +122,7 @@ class Task extends Component {
           console.log(responseJSON);
           Alert.alert(
             'Error',
-            `${Object.values(responseJSON.errors[0])[0]}`,
+            `${Object.values(responseJSON.messages[0])[0]}`,
             [
               {text: 'OK', onPress: () => null},
             ],
@@ -192,6 +228,7 @@ const styles = {
     marginRight: 20,
     flex: 1,
     flexDirection: 'row',
+    padding: 5,
   },
   leftInnerWrapper: {
     flex: 1,
@@ -206,6 +243,8 @@ const styles = {
   },
   rightInnerWrapper: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   box: {
     padding: 2,
@@ -228,7 +267,8 @@ const mapStateToProps = (state, ownProps) => {
     currentUser: state.currentUser,
     userCreatedLists: state.userCreatedLists,
     selectedList: state.selectedList,
+    currentListTasks: state.currentListTasks,
   }
 }
 
-export default connect(mapStateToProps)(Task);
+export default connect(mapStateToProps, actions)(Task);
