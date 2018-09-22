@@ -33,6 +33,7 @@ const TextField = (props) => {
         multiline={multiline}
         maxLength={maxLength}
         numberOfLines={numberOfLines}
+        underlineColorAndroid='transparent'
       />
     </View>
   );
@@ -43,6 +44,9 @@ const styles = {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-around',
+    borderWidth: 1,
+    borderRadius: 5,
+    borderColor: '#003c5a',
   },
   inputStyle: {
     lineHeight: 18,

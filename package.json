@@ -28,6 +28,7 @@
     "react-native": "^0.55.0",
     "react-native-elements": "^0.19.1",
     "react-native-hamburger": "^0.0.2",
+    "react-native-keyboard-aware-scroll-view": "^0.7.2",
     "react-redux": "^5.0.7",
     "redux": "^4.0.0",
     "watchman": "^1.0.0"

@@ -46,3 +46,10 @@ export const setCurrentListTasks = (tasks) => {
     payload: tasks,
   }
 }
+
+export const addCurrentListTask = (task) => {
+  return {
+    type: 'add_task',
+    payload: task
+  }
+}

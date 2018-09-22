@@ -3,6 +3,7 @@ import { Text, View, Image } from 'react-native';
 import { Button, TextField, Spinner } from './common';
 import * as actions from '../actions';
 import { connect } from 'react-redux';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 class LoginScreen extends Component {
   constructor(props) {
@@ -14,7 +15,6 @@ class LoginScreen extends Component {
       loading: false,
     }
     this.sendLoginRequest = this.sendLoginRequest.bind(this);
-    this.setAuthToken = this.setAuthToken.bind(this);
   }
 
   sendLoginRequest() {
@@ -59,7 +59,11 @@ class LoginScreen extends Component {
 
   render() {
     return(
-      <View style={styles.outerContainerStyle}>
+      <KeyboardAwareScrollView 
+        contentContainerStyle={styles.outerContainerStyle}
+        resetScrollToCoords={{ x: 0, y: 0 }}
+        scrollEnabled={false}
+      >
         <View style={styles.innerContainerStyle}>
           <Image 
             source={{ uri: 'https://cdn4.iconfinder.com/data/icons/evil-icons-user-interface/64/cloud_text-512.png' }} 
@@ -88,7 +92,7 @@ class LoginScreen extends Component {
           <Text style={styles.errorTextStyle}>{this.state.error}</Text>
         </View>
         {this.renderButton()}
-      </View>
+      </KeyboardAwareScrollView>
     )
   }
 }
