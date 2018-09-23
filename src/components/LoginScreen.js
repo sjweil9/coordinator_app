@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import { Text, View, Image } from 'react-native';
+import { Text, View, Image, KeyboardAvoidingView } from 'react-native';
 import { Button, TextField, Spinner } from './common';
 import * as actions from '../actions';
 import { connect } from 'react-redux';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 class LoginScreen extends Component {
   constructor(props) {
@@ -59,11 +58,7 @@ class LoginScreen extends Component {
 
   render() {
     return(
-      <KeyboardAwareScrollView 
-        contentContainerStyle={styles.outerContainerStyle}
-        resetScrollToCoords={{ x: 0, y: 0 }}
-        scrollEnabled={false}
-      >
+      <View style={styles.outerContainerStyle}>
         <View style={styles.innerContainerStyle}>
           <Image 
             source={{ uri: 'https://cdn4.iconfinder.com/data/icons/evil-icons-user-interface/64/cloud_text-512.png' }} 
@@ -71,7 +66,10 @@ class LoginScreen extends Component {
           />
           <Text style={styles.appNameStyle}>Coordinator</Text>
         </View>
-        <View style={styles.innerContainerStyle}>
+        <KeyboardAvoidingView 
+          style={styles.innerContainerStyle}
+          behavior="padding"
+        >
           <TextField
             value={this.state.email}
             placeholder='Email Address'
@@ -90,9 +88,11 @@ class LoginScreen extends Component {
             placeholderTextColor='#003C5A'
           />
           <Text style={styles.errorTextStyle}>{this.state.error}</Text>
+        </KeyboardAvoidingView>
+        <View style={styles.innerContainerStyle}>
+          {this.renderButton()}
         </View>
-        {this.renderButton()}
-      </KeyboardAwareScrollView>
+      </View>
     )
   }
 }
@@ -104,14 +104,14 @@ const styles = {
     alignSelf: 'center',
   },
   innerContainerStyle: {
-    height: 100,
+    flex: 1,
   },
   outerContainerStyle: {
     marginTop: 25,
     flex: 1,
     padding: 25,
     flexDirection: 'column',
-    justifyContent: 'space-around'
+    justifyContent: 'space-between'
   },
   appNameStyle: {
     color: '#003C5A',

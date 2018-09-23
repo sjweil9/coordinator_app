@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, KeyboardAvoidingView } from 'react-native';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import List from './List';
 import { Button, TextField, Spinner } from './common';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 class UserLists extends Component {
   constructor(props) {
@@ -97,10 +96,9 @@ class UserLists extends Component {
 
   render() {
     return(
-      <KeyboardAwareScrollView 
-        contentContainerStyle={styles.outerContainer}
-        resetScrollToCoords={{ x: 0, y: 0 }}
-        scrollEnabled={false}
+      <KeyboardAvoidingView 
+        style={styles.outerContainer}
+        behavior="padding"
       >
         <List itemUrl={'lists'} itemType={'list'} />
         <Button 
@@ -108,7 +106,7 @@ class UserLists extends Component {
           buttonText={'Add New List'}
         />
         {this.renderDropDown()}
-      </KeyboardAwareScrollView>
+      </KeyboardAvoidingView>
     )
   }
 }

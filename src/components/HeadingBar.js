@@ -31,10 +31,6 @@ class HeadingBar extends Component {
             onPress={() => null}
           />
           <HamburgerButton
-            buttonText={'Profile'}
-            onPress={() => null}
-          />
-          <HamburgerButton
             buttonText={'Log Out'}
             onPress={() => this.props.setAuthToken(null)}
           />

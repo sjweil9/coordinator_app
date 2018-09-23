@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { View, Text, TouchableOpacity, FlatList } from 'react-native';
-import { CardSection, Spinner, Button, TextField } from './common';
+import { View, Text, FlatList, KeyboardAvoidingView, Image, TouchableOpacity, ScrollView } from 'react-native';
+import { CardSection, Spinner, SmallButton, Button, TextField } from './common';
 import Task from './Task';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
@@ -14,6 +14,7 @@ class ListDetail extends Component {
       loading: false,
       taskName: '',
       taskNameError: '',
+      showCompletedTasks: true,
     }
   }
 
@@ -48,7 +49,7 @@ class ListDetail extends Component {
     return(
       <View style={styles.listContainer}>
         <FlatList
-          data={this.props.currentListTasks}
+          data={this.state.showCompletedTasks ? this.props.currentListTasks : this.props.currentListTasks.filter(task => task.status !== 'completed')}
           renderItem={({item}) => <Task details={item} />}
           keyExtractor={(item, _index) => `${item.id}`}
         />
@@ -60,16 +61,18 @@ class ListDetail extends Component {
     if (this.state.addingTask) {
       return(
         <View style={styles.dropDownContainer}>
-          <TextField
-            value={this.state.taskName}
-            placeholder='Enter a Task'
-            onChangeText={taskName => this.setState({ taskName })}
-            autoCorrect={false}
-            placeholderTextColor='#003C5A'
-            maxLength={50}
-          />
+          <View style={styles.dropDownRow}>
+            <TextField
+              value={this.state.taskName}
+              placeholder='Enter a Task'
+              onChangeText={taskName => this.setState({ taskName })}
+              autoCorrect={false}
+              placeholderTextColor='#003C5A'
+              maxLength={50}
+            />
+            {this.renderButton()}
+          </View>
           <Text style={styles.errorTextStyle}>{this.state.taskNameError}</Text>
-          {this.renderButton()}
         </View>
       )
     }
@@ -83,9 +86,10 @@ class ListDetail extends Component {
       )
     }
     return(
-      <Button 
+      <SmallButton 
         onPress={() => this.createNewTask()}
-        buttonText={'Create'}
+        buttonText={'Add'}
+        backgroundColor="#003c5a"
       />
     )
   }
@@ -118,34 +122,59 @@ class ListDetail extends Component {
     });
   }
 
+  renderShowCompletedCheckBox() {
+    if (this.state.showCompletedTasks) {
+      return(
+        <Image 
+          source={{uri: 'https://www.iconsdb.com/icons/preview/color/003C5A/check-mark-3-xxl.png'}}
+          style={styles.checkMarkStyle}
+        />
+      )
+    }
+    else {
+      return null;
+    }
+  }
+
   render() {
     if (this.state.listDetails) {
       const { id, title, description, created_user } = this.state.listDetails;
 
       return(
-        <View style={styles.outerContainer}>
-          <View style={styles.listHeader}>
-            <CardSection bottomBorder={true}>
-              <Text style={styles.titleText}>{title}</Text>
-            </CardSection>
-            <CardSection bottomBorder={true}>
-              <Text style={styles.descriptionText}>{description}</Text>
-            </CardSection>
-            <CardSection>
-              <Text style={styles.createdByText}>Created By: {created_user.first_name} {created_user.last_name}</Text>
-            </CardSection>
-            <CardSection>
-              <Text style={styles.createdByText}>Collaborators: </Text>
-            </CardSection>
-          </View>
-          <Text style={styles.taskLabel}>--- Tasks ---</Text>
-          {this.renderTasks()}
-          <Button 
-            onPress={() => this.setState({ addingTask: !this.state.addingTask })}
-            buttonText={'Add New Task'}
-          />
-          {this.renderDropDown()}
-        </View>
+        <KeyboardAvoidingView 
+          style={styles.outerContainer}
+          behavior="padding"
+        >
+          <ScrollView>
+            <View style={styles.listHeader}>
+              <CardSection bottomBorder={true}>
+                <Text style={styles.titleText}>{title}</Text>
+              </CardSection>
+              <CardSection bottomBorder={true}>
+                <Text style={styles.descriptionText}>{description}</Text>
+              </CardSection>
+              <CardSection>
+                <Text style={styles.createdByText}>Created By: {created_user.first_name} {created_user.last_name}</Text>
+              </CardSection>
+              <CardSection>
+                <Text style={styles.createdByText}>Collaborators: </Text>
+              </CardSection>
+              <CardSection>
+                <Text style={{ fontSize: 18 }}>Show Completed Tasks:</Text> 
+                <TouchableOpacity style={styles.box} onPress={() => this.setState({ showCompletedTasks: !this.state.showCompletedTasks })}>
+                  {this.renderShowCompletedCheckBox()}
+                </TouchableOpacity>
+              </CardSection>
+            </View>
+            <Text style={styles.taskLabel}>--- Tasks ---</Text>
+            {this.renderTasks()}
+            <Button 
+              onPress={() => this.setState({ addingTask: !this.state.addingTask })}
+              buttonText={'Add New Task'}
+            />
+            {this.renderDropDown()}
+          </ScrollView>
+        </KeyboardAvoidingView>
       )
     }
 
@@ -173,7 +202,7 @@ const styles = {
   outerContainer: {
     flex: 1,
     flexDirection: 'column',
-    paddingBottom: 20,
+    marginBottom: 20,
   },
   listHeader: {
     marginBottom: 10,
@@ -185,7 +214,6 @@ const styles = {
     color: '#003C5A',
     alignSelf: 'stretch',
     textAlign: 'center',
-    flex: 1,
     fontWeight: 'bold',
   },
   descriptionText: {
@@ -221,13 +249,28 @@ const styles = {
     borderRadius: 5,
     elevation: 2,
     margin: 20,
-    height: 140,
   },
   errorTextStyle: {
     color: '#D8000C',
     fontSize: 16,
     textAlign: 'center',
     marginTop: 5
+  },
+  dropDownRow: {
+    flexDirection: 'row'
+  },
+  box: {
+    padding: 2,
+    borderWidth: 2,
+    borderColor: '#003c5a',
+    width: 45,
+    height: 30,
+    backgroundColor: '#c9ddff',
+    marginLeft: 10,
+  },
+  checkMarkStyle: {
+    width: 30,
+    height: 20,
   }
 }
 
