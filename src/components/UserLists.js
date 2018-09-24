@@ -1,21 +1,42 @@
 import React, { Component } from 'react';
-import { View, Text, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
+import { View, Text, KeyboardAvoidingView, TouchableOpacity, FlatList } from 'react-native';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
-import List from './List';
+import ListItem from './ListItem';
 import { Button, TextField, Spinner } from './common';
 
 class UserLists extends Component {
   constructor(props) {
     super(props)
+    this.props.setUserCreatedLists = this.props.setUserCreatedLists.bind(this);
     this.state = {
       addListDropDown: false,
       listTitle: '',
       listDescription: '',
       loading: false,
       descriptionError: '',
-      titleError: ''
+      titleError: '',
+      viewingSubscribed: true,
     }
+  }
+
+  componentWillMount() {
+    fetch(`http://192.168.1.72:3000/lists`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: this.props.authToken,
+    }}).then(response => response.json())
+    .then(responseJSON => {
+      if (responseJSON.code && responseJSON.code != 200) {
+        // handle error on list
+        console.log(responseJSON);
+      }
+      else {
+        this.props.setUserCreatedLists(responseJSON);
+      }
+    });
   }
 
   submitNewList() {
@@ -101,14 +122,29 @@ class UserLists extends Component {
         behavior="padding"
       >
         <View style={styles.twoPanelLink}>
-          <TouchableOpacity style={styles.selectedPanel} onPress={() => null}>
-            <Text>Subscribed</Text>
+          <TouchableOpacity 
+            style={this.state.viewingSubscribed ? styles.selectedPanel : styles.unSelectedPanel} 
+            onPress={() => this.setState({ viewingSubscribed: true })}
+          >
+            <Text style={this.state.viewingSubscribed ? styles.selectedText : styles.unSelectedText}>Subscribed</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.unSelectedPanel} onPress={() => null}>
-            <Text>Invited</Text>
+          <TouchableOpacity 
+            style={this.state.viewingSubscribed ? styles.unSelectedPanel : styles.selectedPanel} 
+            onPress={() => this.setState({ viewingSubscribed: false })}
+          >
+            <Text style={this.state.viewingSubscribed ? styles.unSelectedText : styles.selectedText}>Invited</Text>
           </TouchableOpacity>
         </View>
-        <List itemUrl={'lists'} itemType={'list'} />
+        <View style={styles.listContainer}>
+          {this.props.userCreatedLists.length > 0 ? 
+            <FlatList
+              data={this.props.userCreatedLists}
+              renderItem={({item}) => <ListItem details={item} />}
+              keyExtractor={(item, _index) => `${item.id}`}
+            /> :
+            <Spinner size="large" />
+          }
+        </View>
         <Button 
           onPress={() => this.setState({ addListDropDown: !this.state.addListDropDown })}
           buttonText={'Add New List'}
@@ -124,6 +160,7 @@ const mapStateToProps = (state, ownProps) => {
     ...ownProps,
     authToken: state.authToken,
     currentUser: state.currentUser,
+    userCreatedLists: state.userCreatedLists,
   }
 }
 
@@ -154,18 +191,29 @@ const styles = {
     flexDirection: 'row',
     borderColor: '#003c5a',
     borderWidth: 2,
+    margin: 20,
   },
   selectedPanel: {
     padding: 5,
     backgroundColor: '#003c5a',
+    flex: 1,
+  },
+  selectedText: {
     color: '#c9ddff',
     textAlign: 'center',
   },
   unSelectedPanel: {
     padding: 5,
     backgroundColor: '#c9ddff',
+    flex: 1,
+  },
+  unSelectedText: {
     color: '#003c5a',
     textAlign: 'center',
+  },
+  listContainer: {
+    flex: 1,
+    marginBottom: 20,
   }
 }
 
