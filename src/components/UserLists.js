@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, KeyboardAvoidingView } from 'react-native';
+import { View, Text, KeyboardAvoidingView, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import List from './List';
@@ -100,6 +100,14 @@ class UserLists extends Component {
         style={styles.outerContainer}
         behavior="padding"
       >
+        <View style={styles.twoPanelLink}>
+          <TouchableOpacity style={styles.selectedPanel} onPress={() => null}>
+            <Text>Subscribed</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.unSelectedPanel} onPress={() => null}>
+            <Text>Invited</Text>
+          </TouchableOpacity>
+        </View>
         <List itemUrl={'lists'} itemType={'list'} />
         <Button 
           onPress={() => this.setState({ addListDropDown: !this.state.addListDropDown })}
@@ -140,6 +148,24 @@ const styles = {
     fontSize: 16,
     textAlign: 'center',
     marginTop: 5
+  },
+  twoPanelLink: {
+    alignSelf: 'stretch',
+    flexDirection: 'row',
+    borderColor: '#003c5a',
+    borderWidth: 2,
+  },
+  selectedPanel: {
+    padding: 5,
+    backgroundColor: '#003c5a',
+    color: '#c9ddff',
+    textAlign: 'center',
+  },
+  unSelectedPanel: {
+    padding: 5,
+    backgroundColor: '#c9ddff',
+    color: '#003c5a',
+    textAlign: 'center',
   }
 }
 
