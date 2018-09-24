@@ -6,6 +6,7 @@ import LoginScreen from './LoginScreen';
 import UserLists from './UserLists';
 import ListDetail from './ListDetail';
 import * as actions from '../actions';
+import { Spinner } from './common';
 
 class Router extends Component {
   componentWillMount() {
@@ -40,12 +41,19 @@ class Router extends Component {
 
   renderScreen() {
     if (this.props.authToken) {
-      return(
-        <View style={styles.containerStyle}>
-          <HeadingBar headingText={'Coordinator'} />
-          {this.renderSelectedScreen()}
-        </View>
-      )
+      if (this.props.currentUser) {
+        return(
+          <View style={styles.containerStyle}>
+            <HeadingBar headingText={'Coordinator'} />
+            {this.renderSelectedScreen()}
+          </View>
+        )
+      }
+      else {
+        return(
+          <Spinner size="large" />
+        )
+      }
     }
     return(
       <LoginScreen />

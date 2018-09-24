@@ -21,22 +21,48 @@ class UserLists extends Component {
   }
 
   componentWillMount() {
-    fetch(`http://192.168.1.72:3000/lists`, {
+    this.fetchLists(); 
+  }
+
+  fetchLists() {
+    this.props.setUserCreatedLists([]);
+    console.log(this.state.viewingSubscribed);
+    if (this.state.viewingSubscribed) {
+      fetch(`http://192.168.1.72:3000/users/${this.props.currentUser.id}/lists`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
         Authorization: this.props.authToken,
-    }}).then(response => response.json())
-    .then(responseJSON => {
-      if (responseJSON.code && responseJSON.code != 200) {
-        // handle error on list
-        console.log(responseJSON);
-      }
-      else {
-        this.props.setUserCreatedLists(responseJSON);
-      }
-    });
+      }}).then(response => response.json())
+      .then(responseJSON => {
+        if (responseJSON.code && responseJSON.code != 200) {
+          // handle error on list
+          console.log(responseJSON);
+        }
+        else {
+          this.props.setUserCreatedLists(responseJSON);
+        }
+      });
+    }
+    else {
+      fetch(`http://192.168.1.72:3000/users/${this.props.currentUser.id}/invites`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: this.props.authToken,
+      }}).then(response => response.json())
+      .then(responseJSON => {
+        if (responseJSON.code && responseJSON.code != 200) {
+          // handle error on list
+          console.log(responseJSON);
+        }
+        else {
+          this.props.setUserCreatedLists(responseJSON.map(invite => invite.list));
+        }
+      });
+    }
   }
 
   submitNewList() {
@@ -115,6 +141,14 @@ class UserLists extends Component {
     return null;
   }
 
+  selectInvited() {
+    this.setState({ viewingSubscribed: false }, () => this.fetchLists());
+  }
+
+  selectSubscribed() {
+    this.setState({ viewingSubscribed: true }, () => this.fetchLists()); 
+  }
+
   render() {
     return(
       <KeyboardAvoidingView 
@@ -124,31 +158,31 @@ class UserLists extends Component {
         <View style={styles.twoPanelLink}>
           <TouchableOpacity 
             style={this.state.viewingSubscribed ? styles.selectedPanel : styles.unSelectedPanel} 
-            onPress={() => this.setState({ viewingSubscribed: true })}
+            onPress={() => this.selectSubscribed()}
           >
             <Text style={this.state.viewingSubscribed ? styles.selectedText : styles.unSelectedText}>Subscribed</Text>
           </TouchableOpacity>
           <TouchableOpacity 
             style={this.state.viewingSubscribed ? styles.unSelectedPanel : styles.selectedPanel} 
-            onPress={() => this.setState({ viewingSubscribed: false })}
+            onPress={() => this.selectInvited()}
           >
             <Text style={this.state.viewingSubscribed ? styles.unSelectedText : styles.selectedText}>Invited</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.listContainer}>
-          {this.props.userCreatedLists.length > 0 ? 
-            <FlatList
-              data={this.props.userCreatedLists}
-              renderItem={({item}) => <ListItem details={item} />}
-              keyExtractor={(item, _index) => `${item.id}`}
-            /> :
-            <Spinner size="large" />
-          }
+          <FlatList
+            data={this.props.userCreatedLists}
+            renderItem={({item}) => <ListItem details={item} />}
+            keyExtractor={(item, _index) => `${item.id}`}
+          />
         </View>
-        <Button 
-          onPress={() => this.setState({ addListDropDown: !this.state.addListDropDown })}
-          buttonText={'Add New List'}
-        />
+        {this.state.viewingSubscribed ? 
+          <Button 
+            onPress={() => this.setState({ addListDropDown: !this.state.addListDropDown })}
+            buttonText={'Add New List'}
+          /> :
+          null
+        }
         {this.renderDropDown()}
       </KeyboardAvoidingView>
     )
