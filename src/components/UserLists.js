@@ -3,6 +3,7 @@ import { View, Text, KeyboardAvoidingView, TouchableOpacity, FlatList } from 're
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import ListItem from './ListItem';
+import InviteItem from './InviteItem';
 import { Button, TextField, Spinner } from './common';
 
 class UserLists extends Component {
@@ -59,7 +60,7 @@ class UserLists extends Component {
           console.log(responseJSON);
         }
         else {
-          this.props.setUserCreatedLists(responseJSON.map(invite => invite.list));
+          this.props.setUserInvites(responseJSON);
         }
       });
     }
@@ -171,8 +172,8 @@ class UserLists extends Component {
         </View>
         <View style={styles.listContainer}>
           <FlatList
-            data={this.props.userCreatedLists}
-            renderItem={({item}) => <ListItem details={item} />}
+            data={this.state.viewingSubscribed ? this.props.userCreatedLists : this.props.userInvites}
+            renderItem={({item}) => this.state.viewingSubscribed ? <ListItem details={item} /> : <InviteItem details={item} />}
             keyExtractor={(item, _index) => `${item.id}`}
           />
         </View>
@@ -195,6 +196,7 @@ const mapStateToProps = (state, ownProps) => {
     authToken: state.authToken,
     currentUser: state.currentUser,
     userCreatedLists: state.userCreatedLists,
+    userInvites: state.userInvites,
   }
 }
 

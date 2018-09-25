@@ -53,3 +53,17 @@ export const addCurrentListTask = (task) => {
     payload: task
   }
 }
+
+export const setUserInvites = (invites) => {
+  return {
+    type: 'set_invites',
+    payload: invites
+  }
+}
+
+export const removeUserInvite = (invite_id) => {
+  return {
+    type: 'remove_invite',
+    payload: invite_id,
+  }
+}
