@@ -18,6 +18,11 @@ class HeadingBar extends Component {
     this.props.movePageForward('user_lists');
   }
 
+  moveToFriends() {
+    this.setState({ hamburgerActive: false });
+    this.props.movePageForward('friends');
+  }
+
   renderDropDown() {
     if (this.state.hamburgerActive) {
       return(
@@ -28,7 +33,7 @@ class HeadingBar extends Component {
           />
           <HamburgerButton
             buttonText={'Friends'}
-            onPress={() => null}
+            onPress={() => this.moveToFriends()}
           />
           <HamburgerButton
             buttonText={'Log Out'}

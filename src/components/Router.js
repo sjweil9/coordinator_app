@@ -5,6 +5,7 @@ import HeadingBar from './HeadingBar'
 import LoginScreen from './LoginScreen';
 import UserLists from './UserLists';
 import ListDetail from './ListDetail';
+import FriendsPage from './FriendsPage';
 import * as actions from '../actions';
 import { Spinner } from './common';
 
@@ -16,6 +17,7 @@ class Router extends Component {
   }
 
   setUserProfile() {
+    console.log('set user profile')
     fetch('http://192.168.1.72:3000/users/current', {
       method: 'GET',
       headers: {
@@ -69,6 +71,10 @@ class Router extends Component {
       case 'list_detail':
         return(
           <ListDetail />
+        )
+      case 'friends':
+        return(
+          <FriendsPage />
         )
       default:
         return null
