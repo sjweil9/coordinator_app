@@ -1,12 +1,12 @@
 import React from 'react';
 import { Text, View, Image } from 'react-native';
-import { Card, CardSection } from './common';
+import { CardSection } from './common';
 
 const User = (props) => {
-  const { thumbnailStyle, headingStyle, headingText } = styles;
+  const { thumbnailStyle, headingStyle, headingText, otherText, container } = styles;
 
   return(
-    <Card>
+    <View style={container}>
       <CardSection>
         <View>
           <Image 
@@ -16,18 +16,26 @@ const User = (props) => {
         </View>
         <View style={headingStyle}>
           <Text style={headingText}>{props.details.first_name} {props.details.last_name}</Text>
-          <Text>{props.details.email}</Text>
-          <Text>Joined: {props.details.created_at}</Text>
+          <Text style={otherText}>{props.details.email}</Text>
+          <Text style={otherText}>Joined: {props.details.created_at}</Text>
         </View>
       </CardSection>
-    </Card>
+    </View>
   )
 };
 
 const styles = {
+  container: {
+    margin: 10,
+    padding: 10,
+    backgroundColor: '#95afdb',
+    borderColor: '#003c5a',
+    borderRadius: 5,
+    borderWidth: 1,
+  },
   thumbnailStyle: {
-    height: 75,
-    width: 75
+    height: 50,
+    width: 50,
   },
   headingStyle: {
     justifyContent: 'space-around',
@@ -36,6 +44,10 @@ const styles = {
   },
   headingText: {
     fontSize: 16,
+    color: '#003c5a'
+  },
+  otherText: {
+    color: '#003c5a',
   }
 }
 

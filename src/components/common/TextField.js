@@ -52,6 +52,7 @@ const styles = {
     fontSize: 14,
     padding: 5,
     width: 200,
+    textAlign: 'center',
   }
 }
 

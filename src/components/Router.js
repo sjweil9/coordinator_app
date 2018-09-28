@@ -102,7 +102,8 @@ const mapStateToProps = (state, ownProps) => {
 const styles = {
   containerStyle: {
     flex: 1,
-    backgroundColor: '#c9ddff'
+    backgroundColor: '#c9ddff',
+    justifyContent: 'center',
   }
 }
 
