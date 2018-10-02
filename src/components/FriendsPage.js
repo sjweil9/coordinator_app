@@ -82,11 +82,36 @@ class FriendsPage extends Component {
     }); 
   }
 
+  sendFriendRequest(user_id) {
+    fetch(`http://192.168.1.72:3000/users/${this.props.currentUser.id}/friends`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: this.props.authToken,
+      },
+      body: JSON.stringify({ friend_id: user_id }),
+    }).then(response => response.json())
+    .then(responseJSON => {
+      if (responseJSON.code && responseJSON.code != 201) {
+        // handle error
+      }
+      else {
+        remaining_users = this.state.otherUsers.filter(user => user.id !== user_id);
+        this.setState({ otherUsers: remaining_users });
+      }
+    })
+    .catch(error => {
+      // handle error
+      console.log(error);
+    });
+  }
+
   renderFriendsList() {
     if (this.state.loading) {
       return <Spinner size="large" />
     }
-    else if (this.state.currentFriends.length === 0) {
+    else if (this.state.currentFriends.length == 0) {
       return null;
     }
     const labelText = this.state.viewingCurrent ? 'Current Friends' : 'Pending Friends'
@@ -121,7 +146,7 @@ class FriendsPage extends Component {
         </View>
         <FlatList 
           data={this.state.otherUsers}
-          renderItem={({item}) => <User details={item} />}
+          renderItem={({item}) => <TouchableOpacity onPress={() => this.sendFriendRequest(item.id)}><User details={item} /></TouchableOpacity>}
           keyExtractor={(item, _index) => `${item.id}`}
         />
       </View>
