@@ -30,14 +30,14 @@ class Router extends Component {
       this.setState({ loading: false });
       if (responseJSON.code && responseJSON.code != 200) {
         console.log(responseJSON);
-        this.setAuthToken(null);
+        this.props.setAuthToken(null);
       }
       else {
         this.props.setCurrentUser(responseJSON);
       }
     })
     .catch(error => {
-      this.setAuthToken(null);
+      this.props.setAuthToken(null);
     });
   }
 

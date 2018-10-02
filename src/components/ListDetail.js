@@ -138,7 +138,7 @@ class ListDetail extends Component {
 
   render() {
     if (this.state.listDetails) {
-      const { id, title, description, created_user } = this.state.listDetails;
+      const { id, title, description, created_user, followed_users, pending_users } = this.state.listDetails;
 
       return(
         <KeyboardAvoidingView 
@@ -157,7 +157,10 @@ class ListDetail extends Component {
                 <Text style={styles.createdByText}>Created By: {created_user.first_name} {created_user.last_name}</Text>
               </CardSection>
               <CardSection>
-                <Text style={styles.createdByText}>Collaborators: </Text>
+                <Text style={styles.createdByText}>Collaborators: {followed_users.map(user => `${user.first_name} ${user.last_name}`).join(', ')}</Text>
+              </CardSection>
+              <CardSection>
+                <Text style={styles.createdByText}>Invitees: {pending_users.map(user => `${user.first_name} ${user.last_name}`).join(', ')}</Text>
               </CardSection>
               <CardSection>
                 <Text style={{ fontSize: 18 }}>Show Completed Tasks:</Text> 
