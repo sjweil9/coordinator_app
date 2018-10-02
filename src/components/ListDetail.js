@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, FlatList, KeyboardAvoidingView, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { CardSection, Spinner, SmallButton, Button, TextField } from './common';
 import Task from './Task';
+import User from './User';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 
@@ -15,10 +16,13 @@ class ListDetail extends Component {
       taskName: '',
       taskNameError: '',
       showCompletedTasks: true,
+      invitingUser: false,
+      userFriends: [],
     }
   }
 
   componentWillMount() {
+    this.preLoadFriends();
     console.log('mounting list detail')
     fetch(`http://192.168.1.72:3000/lists/${this.props.selectedList}`, {
       method: 'GET',
@@ -38,6 +42,28 @@ class ListDetail extends Component {
           listDetails: responseJSON,
         });
         this.props.setCurrentListTasks(responseJSON.tasks || []);
+      }
+    }).catch(error => {
+      // handle error
+      console.log(error);
+    });
+  }
+
+  preLoadFriends() {
+    fetch(`http://192.168.1.72:3000/users/${this.props.currentUser.id}/friends?accepted=true`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: this.props.authToken,
+    }}).then(response => response.json())
+    .then(responseJSON => {
+      if (responseJSON.code && responseJSON.code != 200) {
+        // handle error on list details
+        console.log(responseJSON);
+      }
+      else {
+        this.setState({ userFriends: responseJSON });
       }
     }).catch(error => {
       // handle error
@@ -77,6 +103,47 @@ class ListDetail extends Component {
       )
     }
     return null;
+  }
+
+  renderInvitePane() {
+    if (this.state.invitingUser) {
+      const { created_user, followed_users, pending_users } = this.state.listDetails;
+      const followed_user_ids = followed_users.map(follower => follower.id);
+      const invited_user_ids = pending_users.map(invitee => invitee.id);
+      const ineligible_ids = followed_user_ids.concat(invited_user_ids);
+      const eligible_users = this.state.userFriends.filter(user => user.id !== created_user.id && !ineligible_ids.includes(user.id));
+      if (eligible_users.length > 0) {
+        return(
+          <FlatList 
+            data={eligible_users}
+            renderItem={({item}) => <TouchableOpacity onPress={() => this.inviteUser(item.id)}><User details={item} /></TouchableOpacity>}
+            keyExtractor={(item, _index) => `${item.id}`}
+          />
+        )
+      }
+      return(
+        <Text style={{ textAlign: 'center', fontWeight: 'bold', fontSize: 18 }}>No Eligible Users</Text>
+      )
+    }
+    return null;
+  }
+
+  inviteUser(user_id) {
+    fetch(`http://192.168.1.72:3000/lists/${this.props.selectedList}/invitees`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: this.props.authToken,
+      },
+      body: JSON.stringify({ invited_user_id: user_id })
+    }).then(response => response.json())
+    .then(responseJSON => {
+      // indicate success
+    }).catch(error => {
+      // handle error
+      console.log(error);
+    });
   }
 
   renderButton() {
@@ -154,14 +221,26 @@ class ListDetail extends Component {
                 <Text style={styles.descriptionText}>{description}</Text>
               </CardSection>
               <CardSection>
-                <Text style={styles.createdByText}>Created By: {created_user.first_name} {created_user.last_name}</Text>
+                <Text style={styles.createdByBoldText}>Created By: </Text><Text style={styles.createdByText}>{created_user.first_name} {created_user.last_name}</Text>
               </CardSection>
               <CardSection>
-                <Text style={styles.createdByText}>Collaborators: {followed_users.map(user => `${user.first_name} ${user.last_name}`).join(', ')}</Text>
+                <Text style={styles.createdByBoldText}>Collaborators: </Text><Text style={styles.createdByText}>{followed_users.map(user => `${user.first_name} ${user.last_name}`).join(', ')}</Text>
               </CardSection>
               <CardSection>
-                <Text style={styles.createdByText}>Invitees: {pending_users.map(user => `${user.first_name} ${user.last_name}`).join(', ')}</Text>
+                <Text style={styles.createdByBoldText}>Invitees: </Text><Text style={styles.createdByText}>{pending_users.map(user => `${user.first_name} ${user.last_name}`).join(', ')}</Text>
+                <SmallButton 
+                  onPress={() => this.setState({ invitingUser: !this.state.invitingUser })}
+                  buttonText={"+"}
+                  backgroundColor={"#003c5a"}
+                  height={25}
+                  width={25}
+                  margin={5}
+                />
               </CardSection>
+              {this.renderInvitePane()}
+            </View>
+            <Text style={styles.taskLabel}>--- Tasks ---</Text>
+            <View style={{ alignItems: 'center' }}>
               <CardSection>
                 <Text style={{ fontSize: 18 }}>Show Completed Tasks:</Text> 
                 <TouchableOpacity style={styles.box} onPress={() => this.setState({ showCompletedTasks: !this.state.showCompletedTasks })}>
@@ -169,7 +248,6 @@ class ListDetail extends Component {
                 </TouchableOpacity>
               </CardSection>
             </View>
-            <Text style={styles.taskLabel}>--- Tasks ---</Text>
             {this.renderTasks()}
             <Button 
               onPress={() => this.setState({ addingTask: !this.state.addingTask })}
@@ -215,8 +293,7 @@ const styles = {
   titleText: {
     fontSize: 24,
     color: '#003C5A',
-    alignSelf: 'stretch',
-    textAlign: 'center',
+    alignSelf: 'center',
     fontWeight: 'bold',
   },
   descriptionText: {
@@ -226,6 +303,11 @@ const styles = {
   createdByText: {
     fontSize: 14,
     color: '#003c5a',
+  },
+  createdByBoldText: {
+    fontSize: 14,
+    color: '#003c5a',
+    fontWeight: 'bold',
   },
   spinnerContainer: {
     flex: 1,
