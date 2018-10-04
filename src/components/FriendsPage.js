@@ -14,11 +14,14 @@ class FriendsPage extends Component {
       otherUsers: [],
       loading: false,
       searchEntry: '',
+      pendingFriendRequests: [],
+      loadingPendingFriendRequests: false,
     }
   }
 
   componentWillMount() {
-    this.fetchFriends(); 
+    this.fetchFriends();
+    this.fetchFriendRequests();
   }
 
   fetchFriends() {
@@ -48,6 +51,32 @@ class FriendsPage extends Component {
     });
   }
 
+  fetchFriendRequests() {
+    this.setState({ loadingPendingFriendRequests: true });
+    fetch(`http://192.168.1.72:3000/users/${this.props.currentUser.id}/friends/pending`, {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: this.props.authToken,
+    }}).then(response => response.json())
+    .then(responseJSON => {
+      this.setState({ loadingPendingFriendRequests: false });
+      if (responseJSON.code && responseJSON.code != 200) {
+        // handle error on list details
+        console.log(responseJSON);
+      }
+      else {
+        console.log(responseJSON);
+        this.setState({ pendingFriendRequests: responseJSON });
+      }
+    }).catch(error => {
+      // handle error
+      console.log(error);
+      this.setState({ loadingPendingFriendRequests: false });
+    });
+  }
+
   fetchOtherUsers() {
     const { searchEntry } = this.state;
     fetch(`http://192.168.1.72:3000/users/${this.props.currentUser.id}/not_friends?search=${searchEntry}`, {
@@ -72,7 +101,7 @@ class FriendsPage extends Component {
   }
 
   selectCurrent() {
-    this.setState({ viewingCurrent: true, currentFriends: [] }, () => this.fetchFriends()); 
+    this.setState({ viewingCurrent: true, currentFriends: [] }, () => { this.fetchFriends(); this.fetchFriendRequests() }); 
   }
 
   selectFind() {
@@ -97,8 +126,35 @@ class FriendsPage extends Component {
         // handle error
       }
       else {
+        this.fetchFriends();
         remaining_users = this.state.otherUsers.filter(user => user.id !== user_id);
         this.setState({ otherUsers: remaining_users });
+      }
+    })
+    .catch(error => {
+      // handle error
+      console.log(error);
+    });
+  }
+
+  acceptFriendRequest(friendship_id) {
+    fetch(`http://192.168.1.72:3000/friendships/${friendship_id}`, {
+      method: 'PATCH',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: this.props.authToken,
+      },
+      body: JSON.stringify({ accepted: true }),
+    }).then(response => response.json())
+    .then(responseJSON => {
+      if (responseJSON.code && responseJSON.code != 201) {
+        // handle error
+      }
+      else {
+        this.fetchFriends();
+        remaining_requests = this.state.pendingFriendRequests.filter(request => request.id !== friendship_id);
+        this.setState({ pendingFriendRequests: remaining_requests });
       }
     })
     .catch(error => {
@@ -153,6 +209,26 @@ class FriendsPage extends Component {
     )
   }
 
+  renderPendingFriendRequests() {
+    if (this.state.loadingPendingFriendRequests) {
+      return(
+        <View style={styles.searchBarContainer}>
+          <Spinner size="large" />
+        </View>
+      )
+    }
+    return(
+      <View style={styles.searchBarContainer}>
+        <Text style={styles.listLabelText}>Pending Friend Requests</Text>
+        <FlatList 
+          data={this.state.pendingFriendRequests}
+          renderItem={({item}) => <TouchableOpacity onPress={() => this.acceptFriendRequest(item.id)}><User details={item.user} /></TouchableOpacity>}
+          keyExtractor={(item, _index) => `${item.id}`}
+        />
+      </View>
+    )
+  }
+
   render() {
     return(
       <KeyboardAvoidingView style={styles.outerContainer} behavior="padding">
@@ -171,7 +247,7 @@ class FriendsPage extends Component {
           </TouchableOpacity>
         </View>
         {this.renderFriendsList()}
-        {this.renderSearchBar()}
+        {this.state.viewingCurrent ? this.renderPendingFriendRequests() : this.renderSearchBar()}
       </KeyboardAvoidingView>
     )
   }
