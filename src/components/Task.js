@@ -8,6 +8,8 @@ class Task extends Component {
   constructor(props) {
     super(props)
     this.actOnTask = this.actOnTask.bind(this);
+    console.log('im a task!')
+    console.log(props.details);
     this.state = {
       task: props.details
     }
@@ -118,8 +120,7 @@ class Task extends Component {
       }).then(response => response.json())
       .then(responseJSON => {
         if (responseJSON.code && responseJSON.code != 200) {
-          // handle error on list details
-          console.log(responseJSON);
+          // handle error (expecting lock error)
           Alert.alert(
             'Error',
             `${Object.values(responseJSON.messages[0])[0]}`,

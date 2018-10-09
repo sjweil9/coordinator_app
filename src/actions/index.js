@@ -54,6 +54,13 @@ export const addCurrentListTask = (task) => {
   }
 }
 
+export const updateListTask = (id, task) => {
+  return {
+    type: 'update_task',
+    payload: { id: id, task: task }
+  }
+}
+
 export const setUserInvites = (invites) => {
   return {
     type: 'set_invites',
