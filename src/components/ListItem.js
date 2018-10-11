@@ -11,10 +11,7 @@ class ListItem extends Component {
   }
 
   jumpToListDetail() {
-    console.log('jumping to list detail')
-    console.log(this.props.details.id);
     this.props.setSelectedList(this.props.details.id);
-    console.log(this.props)
     this.props.movePageForward('list_detail');
   }
 

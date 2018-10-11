@@ -1,12 +1,18 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { View, Text, FlatList, KeyboardAvoidingView, Image, TouchableOpacity, ScrollView } from 'react-native';
 import { CardSection, Spinner, SmallButton, Button, TextField } from './common';
 import Task from './Task';
 import User from './User';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
+import { ActionCable } from 'react-actioncable-provider';
 
 class ListDetail extends Component {
+  static contextTypes = {
+    cable: PropTypes.object.isRequired
+  };
+  
   constructor(props) {
     super(props)
     this.state = {
@@ -22,8 +28,18 @@ class ListDetail extends Component {
   }
 
   componentWillMount() {
+    console.log(this.context.cable)
+    this.subscription = this.context.cable.subscriptions.create(
+      { channel: 'ListsChannel', list_id: this.props.selectedList },
+      {
+        received: (data) => {
+          console.log('received ws message')
+          console.log(data);
+        }
+      }
+    )
+    console.log(this.context.cable)
     this.preLoadFriends();
-    console.log('mounting list detail')
     fetch(`http://192.168.1.72:3000/lists/${this.props.selectedList}`, {
       method: 'GET',
       headers: {
@@ -47,6 +63,10 @@ class ListDetail extends Component {
       // handle error
       console.log(error);
     });
+  }
+
+  componentWillUnmount() {
+    this.subscription && this.context.cable.subscriptions.remove(this.subscription)
   }
 
   preLoadFriends() {
@@ -203,6 +223,12 @@ class ListDetail extends Component {
     }
   }
 
+  handleReceivedTasks(response) {
+    console.log('I received some tasks!')
+    console.log(response);
+    this.props.setCurrentListTasks(response);
+  }
+
   render() {
     if (this.state.listDetails) {
       const { id, title, description, created_user, followed_users, pending_users } = this.state.listDetails;
@@ -212,6 +238,10 @@ class ListDetail extends Component {
           style={styles.outerContainer}
           behavior="padding"
         >
+          <ActionCable
+            channel={{ channel: 'ListsChannel', list_id: this.props.selectedList }}
+            onReceived={(response) => this.handleReceivedTasks(response)}
+          />
           <ScrollView>
             <View style={styles.listHeader}>
               <CardSection bottomBorder={true}>
