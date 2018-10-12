@@ -35,6 +35,15 @@ class ListDetail extends Component {
         received: (data) => {
           console.log('received ws message')
           console.log(data);
+        },
+        connected: () => {
+          console.log('connected!')
+        },
+        disconnected: () => {
+          console.log('disconnected')
+        },
+        rejected: () => {
+          console.log('rejected')
         }
       }
     )
@@ -260,7 +269,7 @@ class ListDetail extends Component {
                 <Text style={styles.createdByBoldText}>Invitees: </Text><Text style={styles.createdByText}>{pending_users.map(user => `${user.first_name} ${user.last_name}`).join(', ')}</Text>
                 <SmallButton 
                   onPress={() => this.setState({ invitingUser: !this.state.invitingUser })}
-                  buttonText={"+"}
+                  buttonText={this.state.invitingUser ? "-" : "+"}
                   backgroundColor={"#003c5a"}
                   height={25}
                   width={25}

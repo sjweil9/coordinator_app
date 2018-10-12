@@ -8,13 +8,10 @@ class Task extends Component {
   constructor(props) {
     super(props)
     this.actOnTask = this.actOnTask.bind(this);
-    this.state = {
-      task: props.details
-    }
   }
 
   renderDeleteButton() {
-    if (this.state.task.created_user && this.state.task.created_user.id == this.props.currentUser.id) {
+    if (this.props.details.created_user && this.props.details.created_user.id == this.props.currentUser.id) {
       return(
         <SmallButton 
             onPress={() => this.deleteTask()}
@@ -27,7 +24,7 @@ class Task extends Component {
   }
 
   deleteTask() {
-    fetch(`http://192.168.1.72:3000/tasks/${this.state.task.id}`, {
+    fetch(`http://192.168.1.72:3000/tasks/${this.props.details.id}`, {
       method: 'DELETE',
       headers: {
         Accept: 'application/json',
@@ -60,14 +57,15 @@ class Task extends Component {
   }
 
   renderStatus() {
-    if (this.state.task.status == 'claimed') {
+    console.log(`render status on task ${this.props.details.id} ${this.props.details.status}`)
+    if (this.props.details.status == 'claimed') {
       return(
         <Text style={{fontSize: 20, textAlign: 'center', fontWeight: 'bold' }}>
-          {this.state.task.claimed_user.first_name[0].toUpperCase()}{this.state.task.claimed_user.last_name[0].toUpperCase()}
+          {this.props.details.claimed_user.first_name[0].toUpperCase()}{this.props.details.claimed_user.last_name[0].toUpperCase()}
         </Text>
       )
     }
-    else if (this.state.task.status == 'completed') {
+    else if (this.props.details.status == 'completed') {
       return(
         <Image 
           source={{uri: 'https://www.iconsdb.com/icons/preview/color/003C5A/check-mark-3-xxl.png'}}
@@ -79,14 +77,14 @@ class Task extends Component {
   }
 
   actOnTask() {
-    const claimedUser = this.state.task.claimed_user;
-    if (this.state.task.status == 'unclaimed') {
+    const claimedUser = this.props.details.claimed_user;
+    if (this.props.details.status == 'unclaimed') {
       this.changeTaskStatus('claimed');
     }
-    else if (this.state.task.status == 'claimed' && claimedUser && claimedUser.id == this.props.currentUser.id) {
+    else if (this.props.details.status == 'claimed' && claimedUser && claimedUser.id == this.props.currentUser.id) {
       this.unClaimOrCompleteAlert();
     }
-    else if (this.state.task.status == 'completed' && claimedUser && claimedUser.id == this.props.currentUser.id) {
+    else if (this.props.details.status == 'completed' && claimedUser && claimedUser.id == this.props.currentUser.id) {
       this.reverseCompletionAlert();
     }
   }
@@ -100,10 +98,10 @@ class Task extends Component {
   }
 
   changeTaskStatus(action) {
-    const claimedUser = this.state.task.claimed_user;
+    const claimedUser = this.props.details.claimed_user;
     const ownedByUser = claimedUser && claimedUser.id == this.props.currentUser.id;
     if (!claimedUser || action == 'unclaimed' || (ownedByUser)) {
-      fetch(`http://192.168.1.72:3000/lists/${this.props.selectedList}/tasks/${this.state.task.id}/status`, {
+      fetch(`http://192.168.1.72:3000/lists/${this.props.selectedList}/tasks/${this.props.details.id}/status`, {
         method: 'PATCH',
         headers: {
           Accept: 'application/json',
@@ -127,10 +125,7 @@ class Task extends Component {
           )
         }
         else {
-          this.setState({
-            ...this.state,
-            task: responseJSON,
-          });
+          this.props.updateListTask(this.props.details.id, responseJSON);
         }
       }).catch(error => {
         // handle error
@@ -165,7 +160,7 @@ class Task extends Component {
   alreadyClaimedAlert() {
     Alert.alert(
       'Already Claimed',
-      `Task already claimed by ${this.state.task.claimed_user.first_name} ${this.state.task.claimed_user.last_name}`,
+      `Task already claimed by ${this.props.details.claimed_user.first_name} ${this.props.details.claimed_user.last_name}`,
       [
         {text: 'OK', onPress: () => null},
       ],
