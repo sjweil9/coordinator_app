@@ -3,7 +3,7 @@ import { TouchableOpacity, Text } from 'react-native';
 import { CardSection } from './common';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
-
+import Config from '../../config/config';
 
 class ListItem extends Component {
   constructor(props) {

@@ -46,6 +46,7 @@ const styles = {
     borderWidth: 1,
     borderRadius: 5,
     borderColor: '#003c5a',
+    margin: 2,
   },
   inputStyle: {
     lineHeight: 18,

@@ -28,7 +28,6 @@ class UserLists extends Component {
 
   fetchLists() {
     this.props.setUserCreatedLists([]);
-    console.log(this.state.viewingSubscribed);
     if (this.state.viewingSubscribed) {
       fetch(`https://${Config.API_BASE}/users/${this.props.currentUser.id}/lists`, {
       method: 'GET',

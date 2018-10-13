@@ -28,7 +28,6 @@ class FriendsPage extends Component {
   fetchFriends() {
     this.setState({ loading: true });
     status_parameter = this.state.viewingCurrent ? 'true' : 'false';
-    console.log('fetching friends');
     fetch(`https://${Config.API_BASE}/users/${this.props.currentUser.id}/friends?accepted=${status_parameter}`, {
       method: 'GET',
       headers: {
@@ -40,7 +39,6 @@ class FriendsPage extends Component {
       this.setState({ loading: false });
       if (responseJSON.code && responseJSON.code != 200) {
         // handle error on list details
-        console.log(responseJSON);
       }
       else {
         this.setState({ currentFriends: responseJSON });
@@ -90,7 +88,6 @@ class FriendsPage extends Component {
     .then(responseJSON => {
       if (responseJSON.code && responseJSON.code != 200) {
         // handle error on list details
-        console.log(responseJSON);
       }
       else {
         this.setState({ otherUsers: responseJSON });

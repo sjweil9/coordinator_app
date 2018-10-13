@@ -28,7 +28,6 @@ class ListItem extends Component {
         this.setState({ submitting: false })
         if (responseJSON.code && responseJSON.code != 200) {
           // handle error on list details
-          console.log(responseJSON);
         }
         else {
           this.props.removeUserInvite(this.props.details.id);

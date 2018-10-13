@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, Image, KeyboardAvoidingView } from 'react-native';
+import { Text, View, Image, KeyboardAvoidingView, Alert } from 'react-native';
 import { Button, TextField, Spinner } from './common';
 import * as actions from '../actions';
 import { connect } from 'react-redux';
@@ -12,7 +12,12 @@ class LoginScreen extends Component {
       email: '',
       password: '',
       error: '',
+      first_name: '',
+      last_name: '',
+      password_confirmation: '',
       loading: false,
+      loginOption: true,
+      registrationErrors: {},
     }
     this.sendLoginRequest = this.sendLoginRequest.bind(this);
   }
@@ -45,6 +50,48 @@ class LoginScreen extends Component {
     });
   }
 
+  sendRegistrationRequest() {
+    if (this.state.password != this.state.password_confirmation) {
+      Alert.alert(
+        'Error',
+        `Password does not match confirmation`,
+        [
+          {text: 'OK', onPress: () => null},
+        ],
+        { cancelable: true }
+      )
+      return null;
+    }
+    this.setState({ registrationErrors: {}, loading: true });
+    fetch(`https://${Config.API_BASE}/users`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: this.state.email,
+        password: this.state.password,
+        password_confirmation: this.state.password_confirmation,
+        first_name: this.state.first_name,
+        last_name: this.state.last_name,
+      }),
+    }).then(response => response.json())
+    .then(responseJSON => {
+      this.setState({ loading: false });
+      if (responseJSON.code && responseJSON.code != 200) {
+        this.setState({ registrationErrors: responseJSON.messages });
+      }
+      else {
+        this.sendLoginRequest();
+      }
+    })
+    .catch(error => {
+      console.log(error);
+      this.setState({ loading: false });
+    });
+  }
+
   renderButton() {
     if (this.state.loading) {
       return(
@@ -53,7 +100,53 @@ class LoginScreen extends Component {
     }
 
     return(
-      <Button onPress={this.sendLoginRequest} buttonText={'LOG IN'} />
+      <Button 
+        onPress={() => this.state.loginOption ? this.sendLoginRequest() : this.sendRegistrationRequest() }
+        buttonText={this.state.loginOption ? 'LOG IN' : 'REGISTER'} 
+      />
+    )
+  }
+
+  renderRegistrationFields() {
+    return(
+      <View>
+        <TextField
+          value={this.state.password_confirmation}
+          placeholder='Confirm Password'
+          onChangeText={password_confirmation => this.setState({ password_confirmation })}
+          autoCorrect={false}
+          secureTextEntry={true}
+          textContentType="password"
+          placeholderTextColor='#003C5A'
+        />
+        {this.renderConfirmationError()}
+        {this.state.registrationErrors.password_confirmation ? <Text style={styles.errorTextStyle}>{this.state.registrationErrors.password_confirmation[0]}</Text> : null}
+        <TextField
+          value={this.state.first_name}
+          placeholder='First Name'
+          onChangeText={first_name => this.setState({ first_name })}
+          autoCorrect={false}
+          placeholderTextColor='#003C5A'
+        />
+        {this.state.registrationErrors.first_name ? <Text style={styles.errorTextStyle}>{this.state.registrationErrors.first_name[0]}</Text> : null}
+        <TextField
+          value={this.state.last_name}
+          placeholder='Last Name'
+          onChangeText={last_name => this.setState({ last_name })}
+          autoCorrect={false}
+          placeholderTextColor='#003C5A'
+        />
+        {this.state.registrationErrors.last_name ? <Text style={styles.errorTextStyle}>{this.state.registrationErrors.last_name[0]}</Text> : null}
+      </View>
+    )
+  }
+
+  renderConfirmationError() {
+    if (this.state.password_confirmation == '' || this.state.password_confirmation == this.state.password || this.state.loginOption) {
+      return null;
+    }
+    return(
+      <Text style={styles.errorTextStyle}>Confirmation does not match password</Text>
     )
   }
 
@@ -68,7 +161,7 @@ class LoginScreen extends Component {
           <Text style={styles.appNameStyle}>Coordinator</Text>
         </View>
         <KeyboardAvoidingView 
-          style={styles.innerContainerStyle}
+          style={styles.keyboardContainerStyle}
           behavior="padding"
         >
           <TextField
@@ -79,6 +172,7 @@ class LoginScreen extends Component {
             textContentType="emailAddress"
             placeholderTextColor='#003C5A'
           />
+          {this.state.registrationErrors.email ? <Text style={styles.errorTextStyle}>{this.state.registrationErrors.email[0]}</Text> : null}
           <TextField
             value={this.state.password}
             placeholder='Password'
@@ -88,10 +182,20 @@ class LoginScreen extends Component {
             textContentType="password"
             placeholderTextColor='#003C5A'
           />
+          {this.state.registrationErrors.password ? <Text style={styles.errorTextStyle}>{this.state.registrationErrors.password[0]}</Text> : null}
+          {this.state.loginOption ? null : this.renderRegistrationFields()}
           <Text style={styles.errorTextStyle}>{this.state.error}</Text>
-        </KeyboardAvoidingView>
-        <View style={styles.innerContainerStyle}>
           {this.renderButton()}
+        </KeyboardAvoidingView>
+        <View style={styles.bottomContainerStyle}>
+          <Button
+            onPress={() => this.setState({
+              loginOption: !this.state.loginOption,
+              registrationErrors: {},
+              error: ''
+              })}
+            buttonText={this.state.loginOption ? 'Create New Account' : 'Log In'}
+          />
         </View>
       </View>
     )
@@ -104,15 +208,20 @@ const styles = {
     width: 150,
     alignSelf: 'center',
   },
-  innerContainerStyle: {
-    flex: 1,
+  innerContainerStyle: {},
+  keyboardContainerStyle: {
+    marginTop: 25,
+  },
+  bottomContainerStyle: {
+    position: 'absolute',
+    bottom: 10,
+    alignSelf: 'center',
   },
   outerContainerStyle: {
     marginTop: 25,
     flex: 1,
     padding: 25,
     flexDirection: 'column',
-    justifyContent: 'space-between'
   },
   appNameStyle: {
     color: '#003C5A',

@@ -3,7 +3,7 @@ import { Text, View, TouchableOpacity, Alert, Image } from 'react-native';
 import { CardSection, SmallButton } from './common';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
-
+import Config from '../../config/config';
 
 class Task extends Component {
   constructor(props) {
@@ -18,6 +18,8 @@ class Task extends Component {
             onPress={() => this.deleteTask()}
             buttonText={'Delete'}
             backgroundColor={'#D8000C'}
+            height={25}
+            width={45}
         />
       )
     }
@@ -58,10 +60,9 @@ class Task extends Component {
   }
 
   renderStatus() {
-    console.log(`render status on task ${this.props.details.id} ${this.props.details.status}`)
     if (this.props.details.status == 'claimed') {
       return(
-        <Text style={{fontSize: 20, textAlign: 'center', fontWeight: 'bold' }}>
+        <Text style={{fontSize: 16, textAlign: 'center', fontWeight: 'bold' }}>
           {this.props.details.claimed_user.first_name[0].toUpperCase()}{this.props.details.claimed_user.last_name[0].toUpperCase()}
         </Text>
       )
@@ -204,7 +205,7 @@ class Task extends Component {
 
 const styles = {
   headingText: {
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: 'bold'
   },
   lowerBox: {
@@ -216,12 +217,14 @@ const styles = {
     borderColor: '#003C5A',
     borderWidth: 2,
     borderRadius: 5,
-    marginBottom: 10,
+    marginBottom: 5,
     marginLeft: 20,
     marginRight: 20,
+    height: 45,
     flex: 1,
     flexDirection: 'row',
     padding: 5,
+    alignItems: 'center'
   },
   leftInnerWrapper: {
     flex: 1,
@@ -248,8 +251,8 @@ const styles = {
     backgroundColor: '#c9ddff'
   },
   checkMarkStyle: {
-    width: 30,
-    height: 20,
+    width: 22.5,
+    height: 15,
   }
 }
 

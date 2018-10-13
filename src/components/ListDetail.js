@@ -7,7 +7,7 @@ import User from './User';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import { ActionCable } from 'react-actioncable-provider';
-
+import Config from '../../config/config';
 
 class ListDetail extends Component {
   static contextTypes = {
@@ -22,14 +22,13 @@ class ListDetail extends Component {
       loading: false,
       taskName: '',
       taskNameError: '',
-      showCompletedTasks: true,
+      showCompletedTasks: false,
       invitingUser: false,
       userFriends: [],
     }
   }
 
   componentWillMount() {
-    console.log(this.context.cable)
     this.subscription = this.context.cable.subscriptions.create(
       { channel: 'ListsChannel', list_id: this.props.selectedList },
       {
@@ -211,7 +210,8 @@ class ListDetail extends Component {
         this.setState({ taskNameError: responseJSON.messages.title[0] })
       }
       else {
-        this.props.addCurrentListTask(responseJSON);
+        // handled by WS, but should check status and do this if in polling mode
+        // this.props.addCurrentListTask(responseJSON);
       }
     }).catch(error => {
       // handle error

@@ -8,7 +8,7 @@ import RNActionCable from 'react-native-actioncable';
 import Config from './config/config';
 
 RNActionCable.startDebugging()
-const cable = RNActionCable.createConsumer(`ws://${Config.API_BASE}/cable`);
+const cable = RNActionCable.createConsumer(`wss://${Config.API_BASE}/cable`);
 
 export default class App extends React.Component {
   render() {
