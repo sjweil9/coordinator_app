@@ -5,6 +5,7 @@ import HamburgerButton from './common/HamburgerButton';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 
+
 class HeadingBar extends Component {
   constructor(props) {
     super(props)

@@ -4,6 +4,7 @@ import { CardSection, SmallButton } from './common';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 
+
 class Task extends Component {
   constructor(props) {
     super(props)
@@ -24,7 +25,7 @@ class Task extends Component {
   }
 
   deleteTask() {
-    fetch(`http://192.168.1.72:3000/tasks/${this.props.details.id}`, {
+    fetch(`https://afternoon-falls-25012.herokuapp.com/tasks/${this.props.details.id}`, {
       method: 'DELETE',
       headers: {
         Accept: 'application/json',
@@ -101,7 +102,7 @@ class Task extends Component {
     const claimedUser = this.props.details.claimed_user;
     const ownedByUser = claimedUser && claimedUser.id == this.props.currentUser.id;
     if (!claimedUser || action == 'unclaimed' || (ownedByUser)) {
-      fetch(`http://192.168.1.72:3000/lists/${this.props.selectedList}/tasks/${this.props.details.id}/status`, {
+      fetch(`https://afternoon-falls-25012.herokuapp.com/lists/${this.props.selectedList}/tasks/${this.props.details.id}/status`, {
         method: 'PATCH',
         headers: {
           Accept: 'application/json',

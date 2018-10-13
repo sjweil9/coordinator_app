@@ -5,6 +5,7 @@ import * as actions from '../actions';
 import { TextField, Spinner } from './common';
 import User from './User';
 
+
 class FriendsPage extends Component {
   constructor(props) {
     super(props)
@@ -28,7 +29,7 @@ class FriendsPage extends Component {
     this.setState({ loading: true });
     status_parameter = this.state.viewingCurrent ? 'true' : 'false';
     console.log('fetching friends');
-    fetch(`http://192.168.1.72:3000/users/${this.props.currentUser.id}/friends?accepted=${status_parameter}`, {
+    fetch(`https://afternoon-falls-25012.herokuapp.com/users/${this.props.currentUser.id}/friends?accepted=${status_parameter}`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -53,7 +54,7 @@ class FriendsPage extends Component {
 
   fetchFriendRequests() {
     this.setState({ loadingPendingFriendRequests: true });
-    fetch(`http://192.168.1.72:3000/users/${this.props.currentUser.id}/friends/pending`, {
+    fetch(`https://afternoon-falls-25012.herokuapp.com/users/${this.props.currentUser.id}/friends/pending`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -79,7 +80,7 @@ class FriendsPage extends Component {
 
   fetchOtherUsers() {
     const { searchEntry } = this.state;
-    fetch(`http://192.168.1.72:3000/users/${this.props.currentUser.id}/not_friends?search=${searchEntry}`, {
+    fetch(`https://afternoon-falls-25012.herokuapp.com/users/${this.props.currentUser.id}/not_friends?search=${searchEntry}`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -112,7 +113,7 @@ class FriendsPage extends Component {
   }
 
   sendFriendRequest(user_id) {
-    fetch(`http://192.168.1.72:3000/users/${this.props.currentUser.id}/friends`, {
+    fetch(`https://afternoon-falls-25012.herokuapp.com/users/${this.props.currentUser.id}/friends`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -138,7 +139,7 @@ class FriendsPage extends Component {
   }
 
   acceptFriendRequest(friendship_id) {
-    fetch(`http://192.168.1.72:3000/friendships/${friendship_id}`, {
+    fetch(`https://afternoon-falls-25012.herokuapp.com/friendships/${friendship_id}`, {
       method: 'PATCH',
       headers: {
         Accept: 'application/json',

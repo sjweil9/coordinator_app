@@ -9,6 +9,7 @@ import FriendsPage from './FriendsPage';
 import * as actions from '../actions';
 import { Spinner } from './common';
 
+
 class Router extends Component {
   componentWillMount() {
     if (this.props.authToken && !this.props.currentUser) {
@@ -18,7 +19,7 @@ class Router extends Component {
 
   setUserProfile() {
     console.log('set user profile')
-    fetch('http://192.168.1.72:3000/users/current', {
+    fetch(`https://afternoon-falls-25012.herokuapp.com/users/current`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',

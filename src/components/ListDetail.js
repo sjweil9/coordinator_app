@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import { ActionCable } from 'react-actioncable-provider';
 
+
 class ListDetail extends Component {
   static contextTypes = {
     cable: PropTypes.object.isRequired
@@ -49,7 +50,7 @@ class ListDetail extends Component {
     )
     console.log(this.context.cable)
     this.preLoadFriends();
-    fetch(`http://192.168.1.72:3000/lists/${this.props.selectedList}`, {
+    fetch(`https://afternoon-falls-25012.herokuapp.com/lists/${this.props.selectedList}`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -79,7 +80,7 @@ class ListDetail extends Component {
   }
 
   preLoadFriends() {
-    fetch(`http://192.168.1.72:3000/users/${this.props.currentUser.id}/friends?accepted=true`, {
+    fetch(`https://afternoon-falls-25012.herokuapp.com/users/${this.props.currentUser.id}/friends?accepted=true`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -158,7 +159,7 @@ class ListDetail extends Component {
   }
 
   inviteUser(user_id) {
-    fetch(`http://192.168.1.72:3000/lists/${this.props.selectedList}/invitees`, {
+    fetch(`https://afternoon-falls-25012.herokuapp.com/lists/${this.props.selectedList}/invitees`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -192,7 +193,7 @@ class ListDetail extends Component {
 
   createNewTask() {
     this.setState({ loading: true })
-    fetch(`http://192.168.1.72:3000/lists/${this.props.selectedList}/tasks`, {
+    fetch(`https://afternoon-falls-25012.herokuapp.com/lists/${this.props.selectedList}/tasks`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',

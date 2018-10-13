@@ -6,8 +6,9 @@ import reducers from './src/reducers';
 import ActionCableProvider from 'react-actioncable-provider';
 import RNActionCable from 'react-native-actioncable';
 
+
 RNActionCable.startDebugging()
-const cable = RNActionCable.createConsumer('ws://192.168.1.72:3000/cable');
+const cable = RNActionCable.createConsumer(`ws://afternoon-falls-25012.herokuapp.com/cable`);
 
 export default class App extends React.Component {
   render() {

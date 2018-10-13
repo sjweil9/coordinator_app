@@ -4,6 +4,7 @@ import { Button, TextField, Spinner } from './common';
 import * as actions from '../actions';
 import { connect } from 'react-redux';
 
+
 class LoginScreen extends Component {
   constructor(props) {
     super(props)
@@ -18,7 +19,7 @@ class LoginScreen extends Component {
 
   sendLoginRequest() {
     this.setState({ error: '', loading: true });
-    fetch('http://192.168.1.72:3000/login', {
+    fetch(`https://afternoon-falls-25012.herokuapp.com/login`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',

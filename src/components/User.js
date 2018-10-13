@@ -2,6 +2,7 @@ import React from 'react';
 import { Text, View, Image } from 'react-native';
 import { CardSection } from './common';
 
+
 const User = (props) => {
   const { thumbnailStyle, headingStyle, headingText, otherText, container } = styles;
 

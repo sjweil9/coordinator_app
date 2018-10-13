@@ -4,6 +4,7 @@ import { CardSection, Spinner } from './common';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 
+
 class ListItem extends Component {
   constructor(props) {
     super(props)
@@ -14,7 +15,7 @@ class ListItem extends Component {
 
   acceptInvitation() {
     this.setState({ submitting: true });
-    fetch(`http://192.168.1.72:3000/users/${this.props.currentUser.id}/invites/${this.props.details.id}/accepted`, {
+    fetch(`https://afternoon-falls-25012.herokuapp.com/users/${this.props.currentUser.id}/invites/${this.props.details.id}/accepted`, {
       method: 'PATCH',
       headers: {
         Accept: 'application/json',

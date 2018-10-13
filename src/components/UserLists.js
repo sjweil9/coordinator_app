@@ -6,6 +6,7 @@ import ListItem from './ListItem';
 import InviteItem from './InviteItem';
 import { Button, TextField, Spinner } from './common';
 
+
 class UserLists extends Component {
   constructor(props) {
     super(props)
@@ -29,7 +30,7 @@ class UserLists extends Component {
     this.props.setUserCreatedLists([]);
     console.log(this.state.viewingSubscribed);
     if (this.state.viewingSubscribed) {
-      fetch(`http://192.168.1.72:3000/users/${this.props.currentUser.id}/lists`, {
+      fetch(`https://afternoon-falls-25012.herokuapp.com/users/${this.props.currentUser.id}/lists`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
