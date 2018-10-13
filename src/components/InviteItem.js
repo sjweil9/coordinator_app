@@ -3,7 +3,7 @@ import { TouchableOpacity, Text } from 'react-native';
 import { CardSection, Spinner } from './common';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
-
+import Config from '../../config/config';
 
 class ListItem extends Component {
   constructor(props) {
@@ -15,7 +15,7 @@ class ListItem extends Component {
 
   acceptInvitation() {
     this.setState({ submitting: true });
-    fetch(`https://afternoon-falls-25012.herokuapp.com/users/${this.props.currentUser.id}/invites/${this.props.details.id}/accepted`, {
+    fetch(`https://${Config.API_BASE}/users/${this.props.currentUser.id}/invites/${this.props.details.id}/accepted`, {
       method: 'PATCH',
       headers: {
         Accept: 'application/json',

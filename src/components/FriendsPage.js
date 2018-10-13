@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import * as actions from '../actions';
 import { TextField, Spinner } from './common';
 import User from './User';
-
+import Config from '../../config/config';
 
 class FriendsPage extends Component {
   constructor(props) {
@@ -29,7 +29,7 @@ class FriendsPage extends Component {
     this.setState({ loading: true });
     status_parameter = this.state.viewingCurrent ? 'true' : 'false';
     console.log('fetching friends');
-    fetch(`https://afternoon-falls-25012.herokuapp.com/users/${this.props.currentUser.id}/friends?accepted=${status_parameter}`, {
+    fetch(`https://${Config.API_BASE}/users/${this.props.currentUser.id}/friends?accepted=${status_parameter}`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -54,7 +54,7 @@ class FriendsPage extends Component {
 
   fetchFriendRequests() {
     this.setState({ loadingPendingFriendRequests: true });
-    fetch(`https://afternoon-falls-25012.herokuapp.com/users/${this.props.currentUser.id}/friends/pending`, {
+    fetch(`https://${Config.API_BASE}/users/${this.props.currentUser.id}/friends/pending`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -80,7 +80,7 @@ class FriendsPage extends Component {
 
   fetchOtherUsers() {
     const { searchEntry } = this.state;
-    fetch(`https://afternoon-falls-25012.herokuapp.com/users/${this.props.currentUser.id}/not_friends?search=${searchEntry}`, {
+    fetch(`https://${Config.API_BASE}/users/${this.props.currentUser.id}/not_friends?search=${searchEntry}`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -113,7 +113,7 @@ class FriendsPage extends Component {
   }
 
   sendFriendRequest(user_id) {
-    fetch(`https://afternoon-falls-25012.herokuapp.com/users/${this.props.currentUser.id}/friends`, {
+    fetch(`https://${Config.API_BASE}/users/${this.props.currentUser.id}/friends`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -139,7 +139,7 @@ class FriendsPage extends Component {
   }
 
   acceptFriendRequest(friendship_id) {
-    fetch(`https://afternoon-falls-25012.herokuapp.com/friendships/${friendship_id}`, {
+    fetch(`https://${Config.API_BASE}/friendships/${friendship_id}`, {
       method: 'PATCH',
       headers: {
         Accept: 'application/json',

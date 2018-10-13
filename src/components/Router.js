@@ -8,18 +8,11 @@ import ListDetail from './ListDetail';
 import FriendsPage from './FriendsPage';
 import * as actions from '../actions';
 import { Spinner } from './common';
-
+import Config from '../../config/config';
 
 class Router extends Component {
-  componentWillMount() {
-    if (this.props.authToken && !this.props.currentUser) {
-      this.setUserProfile();
-    }
-  }
-
   setUserProfile() {
-    console.log('set user profile')
-    fetch(`https://afternoon-falls-25012.herokuapp.com/users/current`, {
+    fetch(`https://${Config.API_BASE}/users/current`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -38,6 +31,7 @@ class Router extends Component {
       }
     })
     .catch(error => {
+      console.log(error);
       this.props.setAuthToken(null);
     });
   }
@@ -53,6 +47,7 @@ class Router extends Component {
         )
       }
       else {
+        this.setUserProfile();
         return(
           <Spinner size="large" />
         )

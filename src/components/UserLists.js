@@ -5,7 +5,7 @@ import * as actions from '../actions';
 import ListItem from './ListItem';
 import InviteItem from './InviteItem';
 import { Button, TextField, Spinner } from './common';
-
+import Config from '../../config/config';
 
 class UserLists extends Component {
   constructor(props) {
@@ -30,7 +30,7 @@ class UserLists extends Component {
     this.props.setUserCreatedLists([]);
     console.log(this.state.viewingSubscribed);
     if (this.state.viewingSubscribed) {
-      fetch(`https://afternoon-falls-25012.herokuapp.com/users/${this.props.currentUser.id}/lists`, {
+      fetch(`https://${Config.API_BASE}/users/${this.props.currentUser.id}/lists`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -69,11 +69,12 @@ class UserLists extends Component {
 
   submitNewList() {
     this.setState({ loading: true, error: '' })
-    fetch(`http://192.168.1.72:3000/users/${this.props.currentUser.id}/lists`, {
+    fetch(`http://${Config.API_BASE}/users/${this.props.currentUser.id}/lists`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
+        Authorization: this.props.authToken,
       },
       body: JSON.stringify({
         title: this.state.listTitle,

@@ -3,7 +3,7 @@ import { Text, View, Image, KeyboardAvoidingView } from 'react-native';
 import { Button, TextField, Spinner } from './common';
 import * as actions from '../actions';
 import { connect } from 'react-redux';
-
+import Config from '../../config/config';
 
 class LoginScreen extends Component {
   constructor(props) {
@@ -19,7 +19,7 @@ class LoginScreen extends Component {
 
   sendLoginRequest() {
     this.setState({ error: '', loading: true });
-    fetch(`https://afternoon-falls-25012.herokuapp.com/login`, {
+    fetch(`https://${Config.API_BASE}/login`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',

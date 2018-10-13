@@ -5,10 +5,10 @@ import { createStore } from 'redux';
 import reducers from './src/reducers';
 import ActionCableProvider from 'react-actioncable-provider';
 import RNActionCable from 'react-native-actioncable';
-
+import Config from './config/config';
 
 RNActionCable.startDebugging()
-const cable = RNActionCable.createConsumer(`ws://afternoon-falls-25012.herokuapp.com/cable`);
+const cable = RNActionCable.createConsumer(`ws://${Config.API_BASE}/cable`);
 
 export default class App extends React.Component {
   render() {

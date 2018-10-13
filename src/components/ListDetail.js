@@ -50,7 +50,7 @@ class ListDetail extends Component {
     )
     console.log(this.context.cable)
     this.preLoadFriends();
-    fetch(`https://afternoon-falls-25012.herokuapp.com/lists/${this.props.selectedList}`, {
+    fetch(`https://${Config.API_BASE}/lists/${this.props.selectedList}`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -80,7 +80,7 @@ class ListDetail extends Component {
   }
 
   preLoadFriends() {
-    fetch(`https://afternoon-falls-25012.herokuapp.com/users/${this.props.currentUser.id}/friends?accepted=true`, {
+    fetch(`https://${Config.API_BASE}/users/${this.props.currentUser.id}/friends?accepted=true`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -159,7 +159,7 @@ class ListDetail extends Component {
   }
 
   inviteUser(user_id) {
-    fetch(`https://afternoon-falls-25012.herokuapp.com/lists/${this.props.selectedList}/invitees`, {
+    fetch(`https://${Config.API_BASE}/lists/${this.props.selectedList}/invitees`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -193,7 +193,7 @@ class ListDetail extends Component {
 
   createNewTask() {
     this.setState({ loading: true })
-    fetch(`https://afternoon-falls-25012.herokuapp.com/lists/${this.props.selectedList}/tasks`, {
+    fetch(`https://${Config.API_BASE}/lists/${this.props.selectedList}/tasks`, {
       method: 'POST',
       headers: {
         Accept: 'application/json',

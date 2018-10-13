@@ -4,7 +4,7 @@ import Hamburger from 'react-native-hamburger';
 import HamburgerButton from './common/HamburgerButton';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
-
+import Config from '../../config/config';
 
 class HeadingBar extends Component {
   constructor(props) {

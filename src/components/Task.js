@@ -25,7 +25,7 @@ class Task extends Component {
   }
 
   deleteTask() {
-    fetch(`https://afternoon-falls-25012.herokuapp.com/tasks/${this.props.details.id}`, {
+    fetch(`https://${Config.API_BASE}/tasks/${this.props.details.id}`, {
       method: 'DELETE',
       headers: {
         Accept: 'application/json',
@@ -102,7 +102,7 @@ class Task extends Component {
     const claimedUser = this.props.details.claimed_user;
     const ownedByUser = claimedUser && claimedUser.id == this.props.currentUser.id;
     if (!claimedUser || action == 'unclaimed' || (ownedByUser)) {
-      fetch(`https://afternoon-falls-25012.herokuapp.com/lists/${this.props.selectedList}/tasks/${this.props.details.id}/status`, {
+      fetch(`https://${Config.API_BASE}/lists/${this.props.selectedList}/tasks/${this.props.details.id}/status`, {
         method: 'PATCH',
         headers: {
           Accept: 'application/json',
