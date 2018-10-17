@@ -14,7 +14,7 @@ const CardSection = (props) => {
   }
 
   return(
-    <View style={styles}>
+    <View style={props.additionalStyles || styles}>
       {props.children}
     </View>
   )

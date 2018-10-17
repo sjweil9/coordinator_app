@@ -29,25 +29,6 @@ class ListDetail extends Component {
   }
 
   componentWillMount() {
-    this.subscription = this.context.cable.subscriptions.create(
-      { channel: 'ListsChannel', list_id: this.props.selectedList },
-      {
-        received: (data) => {
-          console.log('received ws message')
-          console.log(data);
-        },
-        connected: () => {
-          console.log('connected!')
-        },
-        disconnected: () => {
-          console.log('disconnected')
-        },
-        rejected: () => {
-          console.log('rejected')
-        }
-      }
-    )
-    console.log(this.context.cable)
     this.preLoadFriends();
     fetch(`https://${Config.API_BASE}/lists/${this.props.selectedList}`, {
       method: 'GET',
@@ -72,10 +53,6 @@ class ListDetail extends Component {
       // handle error
       console.log(error);
     });
-  }
-
-  componentWillUnmount() {
-    this.subscription && this.context.cable.subscriptions.remove(this.subscription)
   }
 
   preLoadFriends() {
@@ -234,9 +211,32 @@ class ListDetail extends Component {
   }
 
   handleReceivedTasks(response) {
-    console.log('I received some tasks!')
     console.log(response);
     this.props.setCurrentListTasks(response);
+  }
+
+  deleteList() {
+    fetch(`https://${Config.API_BASE}/lists/${this.props.selectedList}`, {
+      method: 'DELETE',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        Authorization: this.props.authToken,
+      }
+    }).then(response => response.json())
+    .then(responseJSON => {
+      if (responseJSON.code && responseJSON.code != 204) {
+        // handle error
+        console.log(responseJSON);
+      }
+      else {
+        console.log(responseJSON);
+        this.props.movePageForward('user_lists');
+      }
+    }).catch(error => {
+      // handle error
+      console.log(error);
+    });
   }
 
   render() {
@@ -254,8 +254,13 @@ class ListDetail extends Component {
           />
           <ScrollView>
             <View style={styles.listHeader}>
-              <CardSection bottomBorder={true}>
+              <CardSection bottomBorder={true} additionalStyles={styles.topCardSection}>
                 <Text style={styles.titleText}>{title}</Text>
+                <SmallButton
+                  onPress={() => this.deleteList()}
+                  buttonText={'Delete List'}
+                  backgroundColor={'#D8000C'}
+                />
               </CardSection>
               <CardSection bottomBorder={true}>
                 <Text style={styles.descriptionText}>{description}</Text>
@@ -328,7 +333,8 @@ const styles = {
   listHeader: {
     marginBottom: 10,
     marginLeft: 20,
-    marginRight: 20
+    marginRight: 20,
+    flex: 1,
   },
   titleText: {
     fontSize: 24,
@@ -396,6 +402,16 @@ const styles = {
   checkMarkStyle: {
     width: 30,
     height: 20,
+  },
+  topCardSection: { 
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    position: 'relative',
+    padding: 5,
+    borderBottomWidth: 1,
+    borderColor: '#003c5a',
+    marginLeft: 10,
+    marginRight: 10, 
   }
 }
 
