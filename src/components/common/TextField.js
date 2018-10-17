@@ -14,7 +14,8 @@ const TextField = (props) => {
     placeholderTextColor,
     multiline,
     maxLength,
-    numberOfLines
+    numberOfLines,
+    onBlur
   } = props;
 
   return(
@@ -23,6 +24,7 @@ const TextField = (props) => {
         style={inputStyle}
         value={value}
         onChangeText={onChangeText}
+        onBlur={onBlur}
         placeholder={placeholder}
         autoCorrect={autoCorrect}
         autoFocus={autoFocus}
@@ -46,6 +48,7 @@ const styles = {
     borderWidth: 1,
     borderRadius: 5,
     borderColor: '#003c5a',
+    backgroundColor: '#95afdb',
     margin: 2,
   },
   inputStyle: {

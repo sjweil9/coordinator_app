@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, Image, KeyboardAvoidingView, Alert } from 'react-native';
+import { Text, View, Image, KeyboardAvoidingView, Alert, Dimensions, ScrollView } from 'react-native';
 import { Button, TextField, Spinner } from './common';
 import * as actions from '../actions';
 import { connect } from 'react-redux';
@@ -118,6 +118,7 @@ class LoginScreen extends Component {
           secureTextEntry={true}
           textContentType="password"
           placeholderTextColor='#003C5A'
+          onBlur={() => this.setState({ password_confirmation: this.state.password_confirmation.trim() })}
         />
         {this.renderConfirmationError()}
         {this.state.registrationErrors.password_confirmation ? <Text style={styles.errorTextStyle}>{this.state.registrationErrors.password_confirmation[0]}</Text> : null}
@@ -127,6 +128,7 @@ class LoginScreen extends Component {
           onChangeText={first_name => this.setState({ first_name })}
           autoCorrect={false}
           placeholderTextColor='#003C5A'
+          onBlur={() => this.setState({ first_name: this.state.first_name.trim() })}
         />
         {this.state.registrationErrors.first_name ? <Text style={styles.errorTextStyle}>{this.state.registrationErrors.first_name[0]}</Text> : null}
         <TextField
@@ -135,6 +137,7 @@ class LoginScreen extends Component {
           onChangeText={last_name => this.setState({ last_name })}
           autoCorrect={false}
           placeholderTextColor='#003C5A'
+          onBlur={() => this.setState({ last_name: this.state.last_name.trim() })}
         />
         {this.state.registrationErrors.last_name ? <Text style={styles.errorTextStyle}>{this.state.registrationErrors.last_name[0]}</Text> : null}
       </View>
@@ -152,41 +155,42 @@ class LoginScreen extends Component {
 
   render() {
     return(
-      <View style={styles.outerContainerStyle}>
-        <View style={styles.innerContainerStyle}>
-          <Image 
-            source={{ uri: 'https://cdn4.iconfinder.com/data/icons/evil-icons-user-interface/64/cloud_text-512.png' }} 
-            style={styles.logoStyle}
-          />
-          <Text style={styles.appNameStyle}>Coordinator</Text>
-        </View>
-        <KeyboardAvoidingView 
-          style={styles.keyboardContainerStyle}
-          behavior="padding"
-        >
-          <TextField
-            value={this.state.email}
-            placeholder='Email Address'
-            onChangeText={email => this.setState({ email })}
-            autoCorrect={false}
-            textContentType="emailAddress"
-            placeholderTextColor='#003C5A'
-          />
-          {this.state.registrationErrors.email ? <Text style={styles.errorTextStyle}>{this.state.registrationErrors.email[0]}</Text> : null}
-          <TextField
-            value={this.state.password}
-            placeholder='Password'
-            secureTextEntry={true}
-            onChangeText={password => this.setState({ password })}
-            autoCorrect={false}
-            textContentType="password"
-            placeholderTextColor='#003C5A'
-          />
-          {this.state.registrationErrors.password ? <Text style={styles.errorTextStyle}>{this.state.registrationErrors.password[0]}</Text> : null}
-          {this.state.loginOption ? null : this.renderRegistrationFields()}
-          <Text style={styles.errorTextStyle}>{this.state.error}</Text>
-          {this.renderButton()}
-        </KeyboardAvoidingView>
+      <KeyboardAvoidingView style={styles.outerContainerStyle} behavior="padding">
+        <ScrollView style={{ flex: 1 }}>
+          <View style={styles.innerContainerStyle}>
+            <Image 
+              source={{ uri: 'https://cdn4.iconfinder.com/data/icons/evil-icons-user-interface/64/cloud_text-512.png' }} 
+              style={styles.logoStyle}
+            />
+            <Text style={styles.appNameStyle}>Coordinator</Text>
+          </View>
+          <View style={styles.inputsContainerStyle}>
+            <TextField
+              value={this.state.email}
+              placeholder='Email Address'
+              onChangeText={email => this.setState({ email })}
+              autoCorrect={false}
+              textContentType="emailAddress"
+              placeholderTextColor='#003C5A'
+              onBlur={() => this.setState({ email: this.state.email.trim() })}
+            />
+            {this.state.registrationErrors.email ? <Text style={styles.errorTextStyle}>{this.state.registrationErrors.email[0]}</Text> : null}
+            <TextField
+              value={this.state.password}
+              placeholder='Password'
+              secureTextEntry={true}
+              onChangeText={password => this.setState({ password })}
+              autoCorrect={false}
+              textContentType="password"
+              placeholderTextColor='#003C5A'
+              onBlur={() => this.setState({ password: this.state.password.trim() })}
+            />
+            {this.state.registrationErrors.password ? <Text style={styles.errorTextStyle}>{this.state.registrationErrors.password[0]}</Text> : null}
+            {this.state.loginOption ? null : this.renderRegistrationFields()}
+            <Text style={styles.errorTextStyle}>{this.state.error}</Text>
+            {this.renderButton()}
+          </View>
+        </ScrollView>
         <View style={styles.bottomContainerStyle}>
           <Button
             onPress={() => this.setState({
@@ -194,13 +198,15 @@ class LoginScreen extends Component {
               registrationErrors: {},
               error: ''
               })}
-            buttonText={this.state.loginOption ? 'Create New Account' : 'Log In'}
+            buttonText={this.state.loginOption ? 'Need a new account?' : 'Already have an account?'}
           />
         </View>
-      </View>
+      </KeyboardAvoidingView>
     )
   }
 }
+
+const { width, height } = Dimensions.get('window');
 
 const styles = {
   logoStyle: {
@@ -209,13 +215,14 @@ const styles = {
     alignSelf: 'center',
   },
   innerContainerStyle: {},
-  keyboardContainerStyle: {
+  inputsContainerStyle: {
     marginTop: 25,
   },
   bottomContainerStyle: {
     position: 'absolute',
     bottom: 10,
     alignSelf: 'center',
+    width: width,
   },
   outerContainerStyle: {
     marginTop: 25,

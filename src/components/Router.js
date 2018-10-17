@@ -54,7 +54,9 @@ class Router extends Component {
       }
     }
     return(
-      <LoginScreen />
+      <View style={styles.containerStyle}>
+        <LoginScreen />
+      </View>
     )
   }
 
