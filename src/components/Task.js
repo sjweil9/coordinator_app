@@ -70,7 +70,7 @@ class Task extends Component {
     else if (this.props.details.status == 'completed') {
       return(
         <Image 
-          source={require('../../assets/images/checkmark.png')
+          source={require('../../assets/images/checkmark.png')}
           style={styles.checkMarkStyle}
         />
       )
