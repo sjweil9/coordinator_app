@@ -3,7 +3,7 @@
     "sdkVersion": "27.0.0",
     "name":"Coordinator",
     "description":"Coordinated Todo Lists",
-    "slug":"https://exp.host/@sjweil9/coordinator_app",
+    "slug":"coordinator_app",
     "privacy":"public",
     "version":"1.0.0",
     "orientation":"portrait",

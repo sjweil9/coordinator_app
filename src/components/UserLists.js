@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, KeyboardAvoidingView, TouchableOpacity, FlatList } from 'react-native';
+import { View, Text, KeyboardAvoidingView, TouchableOpacity, FlatList, ScrollView } from 'react-native';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import ListItem from './ListItem';
@@ -47,7 +47,7 @@ class UserLists extends Component {
       });
     }
     else {
-      fetch(`http://192.168.1.72:3000/users/${this.props.currentUser.id}/invites`, {
+      fetch(`https://${Config.API_BASE}/users/${this.props.currentUser.id}/invites`, {
       method: 'GET',
       headers: {
         Accept: 'application/json',
@@ -90,6 +90,7 @@ class UserLists extends Component {
       }
       else {
         this.props.addUserCreatedList(responseJSON);
+        this.setState({ addListDropDown: false });
       }
     })
     .catch(error => {
@@ -157,35 +158,37 @@ class UserLists extends Component {
         style={styles.outerContainer}
         behavior="padding"
       >
-        <View style={styles.twoPanelLink}>
-          <TouchableOpacity 
-            style={this.state.viewingSubscribed ? styles.selectedPanel : styles.unSelectedPanel} 
-            onPress={() => this.selectSubscribed()}
-          >
-            <Text style={this.state.viewingSubscribed ? styles.selectedText : styles.unSelectedText}>Subscribed</Text>
-          </TouchableOpacity>
-          <TouchableOpacity 
-            style={this.state.viewingSubscribed ? styles.unSelectedPanel : styles.selectedPanel} 
-            onPress={() => this.selectInvited()}
-          >
-            <Text style={this.state.viewingSubscribed ? styles.unSelectedText : styles.selectedText}>Invited</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.listContainer}>
-          <FlatList
-            data={this.state.viewingSubscribed ? this.props.userCreatedLists : this.props.userInvites}
-            renderItem={({item}) => this.state.viewingSubscribed ? <ListItem details={item} /> : <InviteItem details={item} />}
-            keyExtractor={(item, _index) => `${item.id}`}
-          />
-        </View>
-        {this.state.viewingSubscribed ? 
-          <Button 
-            onPress={() => this.setState({ addListDropDown: !this.state.addListDropDown })}
-            buttonText={'Add New List'}
-          /> :
-          null
-        }
-        {this.renderDropDown()}
+        <ScrollView style={{ flex: 1 }}>
+          <View style={styles.twoPanelLink}>
+            <TouchableOpacity 
+              style={this.state.viewingSubscribed ? styles.selectedPanel : styles.unSelectedPanel} 
+              onPress={() => this.selectSubscribed()}
+            >
+              <Text style={this.state.viewingSubscribed ? styles.selectedText : styles.unSelectedText}>Subscribed</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={this.state.viewingSubscribed ? styles.unSelectedPanel : styles.selectedPanel} 
+              onPress={() => this.selectInvited()}
+            >
+              <Text style={this.state.viewingSubscribed ? styles.unSelectedText : styles.selectedText}>Invited</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.listContainer}>
+            <FlatList
+              data={this.state.viewingSubscribed ? this.props.userCreatedLists : this.props.userInvites}
+              renderItem={({item}) => this.state.viewingSubscribed ? <ListItem details={item} /> : <InviteItem details={item} />}
+              keyExtractor={(item, _index) => `${item.id}`}
+            />
+          </View>
+          {this.state.viewingSubscribed ? 
+            <Button 
+              onPress={() => this.setState({ addListDropDown: !this.state.addListDropDown })}
+              buttonText={'Add New List'}
+            /> :
+            null
+          }
+          {this.renderDropDown()}
+        </ScrollView>
       </KeyboardAvoidingView>
     )
   }

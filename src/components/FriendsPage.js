@@ -1,5 +1,13 @@
 import React, { Component } from 'react';
-import { View, Text, KeyboardAvoidingView, TouchableOpacity, FlatList } from 'react-native';
+import { 
+  View,
+  Text, 
+  KeyboardAvoidingView, 
+  TouchableOpacity, 
+  FlatList, 
+  ScrollView, 
+  Alert 
+} from 'react-native';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 import { TextField, Spinner } from './common';
@@ -110,6 +118,18 @@ class FriendsPage extends Component {
   }
 
   sendFriendRequest(user_id) {
+    Alert.alert(
+      'Friend Request',
+      `Do you want to send a friend request?`,
+      [
+        {text: 'OK', onPress: () => this.processFriendRequest(user_id)},
+        {text: 'Cancel', onPress: () => null}
+      ],
+      { cancelable: true }
+    )
+  }
+
+  processFriendRequest(user_id) {
     fetch(`https://${Config.API_BASE}/users/${this.props.currentUser.id}/friends`, {
       method: 'POST',
       headers: {
@@ -136,6 +156,18 @@ class FriendsPage extends Component {
   }
 
   acceptFriendRequest(friendship_id) {
+    Alert.alert(
+      'Friend Request',
+      `Do you want to accept?`,
+      [
+        {text: 'OK', onPress: () => this.processAcceptFriendRequest(friendship_id)},
+        {text: 'Cancel', onPress: () => null}
+      ],
+      { cancelable: true }
+    )
+  }
+
+  processAcceptFriendRequest(friendship_id) {
     fetch(`https://${Config.API_BASE}/friendships/${friendship_id}`, {
       method: 'PATCH',
       headers: {
@@ -230,22 +262,24 @@ class FriendsPage extends Component {
   render() {
     return(
       <KeyboardAvoidingView style={styles.outerContainer} behavior="padding">
-        <View style={styles.twoPanelLink}>
-          <TouchableOpacity 
-            style={this.state.viewingCurrent ? styles.selectedPanel : styles.unSelectedPanel} 
-            onPress={() => this.selectCurrent()}
-          >
-            <Text style={this.state.viewingCurrent ? styles.selectedText : styles.unSelectedText}>Current</Text>
-          </TouchableOpacity>
-          <TouchableOpacity 
-            style={this.state.viewingCurrent ? styles.unSelectedPanel : styles.selectedPanel} 
-            onPress={() => this.selectFind()}
-          >
-            <Text style={this.state.viewingCurrent ? styles.unSelectedText : styles.selectedText}>Search</Text>
-          </TouchableOpacity>
-        </View>
-        {this.renderFriendsList()}
-        {this.state.viewingCurrent ? this.renderPendingFriendRequests() : this.renderSearchBar()}
+        <ScrollView style={{ flex: 1 }}>
+          <View style={styles.twoPanelLink}>
+            <TouchableOpacity 
+              style={this.state.viewingCurrent ? styles.selectedPanel : styles.unSelectedPanel} 
+              onPress={() => this.selectCurrent()}
+            >
+              <Text style={this.state.viewingCurrent ? styles.selectedText : styles.unSelectedText}>Current</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={this.state.viewingCurrent ? styles.unSelectedPanel : styles.selectedPanel} 
+              onPress={() => this.selectFind()}
+            >
+              <Text style={this.state.viewingCurrent ? styles.unSelectedText : styles.selectedText}>Search</Text>
+            </TouchableOpacity>
+          </View>
+          {this.renderFriendsList()}
+          {this.state.viewingCurrent ? this.renderPendingFriendRequests() : this.renderSearchBar()}
+        </ScrollView>
       </KeyboardAvoidingView>
     )
   }
