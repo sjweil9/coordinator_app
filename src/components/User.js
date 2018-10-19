@@ -12,7 +12,7 @@ const User = (props) => {
         <View>
           <Image 
             style={thumbnailStyle}
-            source={{ uri: 'https://i.stack.imgur.com/WmvM0.png' }} 
+            source={require('../../assets/images/default_portrait.png')}
           />
         </View>
         <View style={headingStyle}>

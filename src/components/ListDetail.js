@@ -200,7 +200,7 @@ class ListDetail extends Component {
     if (this.state.showCompletedTasks) {
       return(
         <Image 
-          source={{uri: 'https://www.iconsdb.com/icons/preview/color/003C5A/check-mark-3-xxl.png'}}
+          source={require('../../assets/images/checkmark.png')
           style={styles.checkMarkStyle}
         />
       )

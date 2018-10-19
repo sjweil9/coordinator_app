@@ -159,7 +159,7 @@ class LoginScreen extends Component {
         <ScrollView style={{ flex: 1 }}>
           <View style={styles.innerContainerStyle}>
             <Image 
-              source={{ uri: 'https://cdn4.iconfinder.com/data/icons/evil-icons-user-interface/64/cloud_text-512.png' }} 
+              source={require('../../assets/images/cloud.png')} 
               style={styles.logoStyle}
             />
             <Text style={styles.appNameStyle}>Coordinator</Text>
